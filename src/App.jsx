@@ -59,14 +59,24 @@ function Root(props) {
         </ul>
       </nav>
 
-      <div
-        className="bg h-full flex-grow px-20"
-        style={{ minHeight: "calc(100vh - 17.5rem)" }}
-      >
+      <div>
         {user ? (
-          <main>{children || <Outlet />}</main>
+          <div
+            className="bg h-full flex-grow px-20"
+            style={{ minHeight: "calc(100vh - 17.5rem)" }}
+          >
+            <main>{children || <Outlet />}</main>
+          </div>
         ) : (
-          <div className="center h-full">
+          <div
+            className="bg h-full flex-grow px-20"
+            style={{
+              minHeight: "calc(100vh - 17.5rem)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
             <SignInDialogue />
           </div>
         )}
@@ -121,15 +131,19 @@ function SignInDialogue() {
   };
 
   return (
-    <div className="center h-full">
-      <h1 className="text-center text-5xl font-bold">
-        Welcome to Easy Recipes
-      </h1>
-      <p className="text-center text-2xl">
-        Please sign in with Google to continue
-      </p>
-      <div className="font-semibold mx-auto">
-        <GoogleButton />
+    <div className="my-auto">
+      <div className="center flex flex-col gap-5 h-fit w-fit mx-auto">
+        <div className="flex flex-col gap-2 w-fit">
+          <h1 className="text-center text-5xl font-bold">
+            Welcome to Easy Recipes
+          </h1>
+          <p className="text-center text-2xl">
+            Please sign in with Google to continue
+          </p>
+        </div>
+        <div className="font-semibold mx-auto w-fit">
+          <GoogleButton />
+        </div>
       </div>
     </div>
   );
