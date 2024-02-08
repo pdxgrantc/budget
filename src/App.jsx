@@ -25,6 +25,7 @@ import google_pressed from "./assets/btn_google_signin_dark_pressed_web@2x.png";
 import Dashboard from "./Dashboard";
 import About from "./About";
 
+
 export default function App() {
   return (
     <BrowserRouter>
