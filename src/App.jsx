@@ -52,17 +52,25 @@ function Root(props) {
           className="flex gap-5 text-subheader font-semibold mb-2"
           style={{ alignSelf: "flex-end" }}
         >
+          {user && (
+            <>
+              <li className="custom-button">
+                <NavLink to="/">Dashboard</NavLink>
+              </li>
+              <li className="custom-button">
+                <NavLink to="/income">Income</NavLink>
+              </li>
+              <li className="custom-button">
+                <NavLink to="/spending">Spending</NavLink>
+              </li>
+            </>
+          )}
           <li className="custom-button">
-            <NavLink to="/">Dashboard</NavLink>
-          </li>
-          <li className="custom-button">
-            <NavLink to="/income">Income</NavLink>
-          </li>
-          <li className="custom-button">
-            <NavLink to="/spending">Spending</NavLink>
-          </li>
-          <li className="custom-button">
-            <button onClick={SignOut}>Sign Out</button>
+            {!user ? (
+              <button onClick={SignIn}>Sign In</button>
+            ) : (
+              <button onClick={SignOut}>Sign Out</button>
+            )}
           </li>
         </ul>
       </nav>
