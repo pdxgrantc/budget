@@ -6,6 +6,12 @@ import {
   NavLink,
 } from "react-router-dom";
 import PropTypes from "prop-types";
+import { SignIn, SignOut, auth } from "./firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+
+// Images
+import google_normal from "./assets/btn_google_signin_dark_normal_web@2x.png";
+import google_pressed from "./assets/btn_google_signin_dark_pressed_web@2x.png";
 
 import Dashboard from "./Dashboard";
 import About from "./About";
@@ -31,6 +37,7 @@ export default function App() {
 
 function Root(props) {
   const { children } = props;
+  const [user] = useAuthState(auth);
 
   return (
     <div className="text min-h-screen w-full">
@@ -43,6 +50,9 @@ function Root(props) {
           <li>
             <NavLink to="/about">About</NavLink>
           </li>
+          <li>
+            <button onClick={SignOut}>Sign Out</button>
+          </li>
         </ul>
       </nav>
 
@@ -50,7 +60,13 @@ function Root(props) {
         className="bg h-full flex-grow px-20"
         style={{ minHeight: "calc(100vh - 17.5rem)" }}
       >
-        <main>{children || <Outlet />}</main>
+        {user ? (
+          <main>{children || <Outlet />}</main>
+        ) : (
+          <div className="center h-full">
+            <SignInDialogue />
+          </div>
+        )}
       </div>
 
       <footer className="bg-black px-20 h-[12.5rem] flex justify-around flex-col">
@@ -72,6 +88,46 @@ function Root(props) {
           <p className="mx-auto">Grant Conklin - 2024</p>
         </div>
       </footer>
+    </div>
+  );
+}
+
+function SignInDialogue() {
+  const GoogleButton = () => {
+    const handleMouseEnter = (event) => {
+      // Change the source of the image to the second image
+      event.target.src = google_pressed;
+    };
+
+    const handleMouseLeave = (event) => {
+      // Change the source of the image back to the first image
+      event.target.src = google_normal;
+    };
+
+    return (
+      <button className="mx-auto transition rounded" onClick={SignIn}>
+        <img
+          src={google_normal}
+          alt="Button"
+          className="h-[5rem]"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        />
+      </button>
+    );
+  };
+
+  return (
+    <div className="center h-full">
+      <h1 className="text-center text-5xl font-bold">
+        Welcome to Easy Recipes
+      </h1>
+      <p className="text-center text-2xl">
+        Please sign in with Google to continue
+      </p>
+      <div className="font-semibold mx-auto">
+        <GoogleButton />
+      </div>
     </div>
   );
 }
