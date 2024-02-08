@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 
-
+// Web app's Firebase configuration
 const firebaseConfig = {
     apiKey: "AIzaSyAbgm1NnjRz_mLX4aaqR96iUV3AifBoqd8",
     authDomain: "budget-a4c79.firebaseapp.com",

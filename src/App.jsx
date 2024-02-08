@@ -22,9 +22,9 @@ import google_normal from "./assets/btn_google_signin_dark_normal_web@2x.png";
 import google_pressed from "./assets/btn_google_signin_dark_pressed_web@2x.png";
 
 // Pages
-import Dashboard from "./Dashboard";
-import About from "./About";
-
+import Dashboard from "./pages/Dashboard";
+import Income from "./pages/Income";
+import Spending from "./pages/Spending";
 
 export default function App() {
   return (
@@ -32,7 +32,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Root />} caseSensitive={true}>
           <Route index element={<Dashboard />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/income" element={<Income />} />
+          <Route path="/spending" element={<Spending />} />
         </Route>
       </Routes>
     </BrowserRouter>
@@ -52,7 +53,10 @@ function Root(props) {
             <NavLink to="/">Dashboard</NavLink>
           </li>
           <li>
-            <NavLink to="/about">About</NavLink>
+            <NavLink to="/income">Income</NavLink>
+          </li>
+          <li>
+            <NavLink to="/spending">Spending</NavLink>
           </li>
           <li>
             <button onClick={SignOut}>Sign Out</button>
