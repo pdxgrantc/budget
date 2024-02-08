@@ -10,7 +10,7 @@ import PropTypes from "prop-types";
 import Home from "./Home";
 import About from "./About";
 
-function App() {
+export default function App() {
   return (
     <BrowserRouter>
       <Routes>
@@ -22,8 +22,6 @@ function App() {
     </BrowserRouter>
   );
 }
-
-export default App;
 
 function Root(props) {
   const { children } = props;
