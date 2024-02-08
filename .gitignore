@@ -12,7 +12,7 @@ dist
 dist-ssr
 *.local
 
-.firebase/hosting.ZGlzdA.cache
+hosting.ZGlzdA.cache
 
 # Editor directories and files
 .vscode/*
