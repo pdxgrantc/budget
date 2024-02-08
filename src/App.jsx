@@ -143,7 +143,7 @@ function SignInDialogue() {
       <div className="center flex flex-col gap-5 h-fit w-fit mx-auto">
         <div className="flex flex-col gap-2 w-fit">
           <h1 className="text-center text-5xl font-bold">
-            Welcome to Easy Recipes
+            Welcome to Easy Budget
           </h1>
           <p className="text-center text-2xl">
             Please sign in with Google to continue
