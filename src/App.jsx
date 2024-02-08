@@ -6,21 +6,24 @@ import {
   NavLink,
 } from "react-router-dom";
 import PropTypes from "prop-types";
+
+// Firebase
 import { SignIn, SignOut, auth } from "./firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-
-// Images
-import google_normal from "./assets/btn_google_signin_dark_normal_web@2x.png";
-import google_pressed from "./assets/btn_google_signin_dark_pressed_web@2x.png";
-
-import Dashboard from "./Dashboard";
-import About from "./About";
 
 // icons
 import { SiGithub as GitHubLogo } from "react-icons/si";
 import { FaLinkedinIn as LinkedLogo } from "react-icons/fa";
 import { IoIosMail as MailLogo } from "react-icons/io";
 import { IoPersonCircleSharp as AboutLogo } from "react-icons/io5";
+
+// Images
+import google_normal from "./assets/btn_google_signin_dark_normal_web@2x.png";
+import google_pressed from "./assets/btn_google_signin_dark_pressed_web@2x.png";
+
+// Pages
+import Dashboard from "./Dashboard";
+import About from "./About";
 
 export default function App() {
   return (
