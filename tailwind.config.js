@@ -20,6 +20,7 @@ export default {
         lheader: '3.25rem',
         header: '2.75rem',
         subheader: '2.25rem',
+        xxl: '2rem',
         xl: '1.75rem',
       },
     },

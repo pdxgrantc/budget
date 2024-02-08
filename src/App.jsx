@@ -48,7 +48,7 @@ function Root(props) {
     <div className="text min-h-screen w-full">
       <nav className="h-20 bg-black px-20">
         <ul className="flex gap-5">
-          <h1 className="">Easy Recipes</h1>
+          <h1 className="">Easy Budget</h1>
           <li>
             <NavLink to="/">Dashboard</NavLink>
           </li>
