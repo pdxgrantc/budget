@@ -46,19 +46,22 @@ function Root(props) {
 
   return (
     <div className="text min-h-screen w-full">
-      <nav className="h-20 bg-black px-20">
-        <ul className="flex gap-5">
-          <h1 className="">Easy Budget</h1>
-          <li>
+      <nav className="h-20 bg-black px-20 flex flex-wrap items-center justify-between">
+        <h1 className="text-lheader font-semibold">Easy Budget</h1>
+        <ul
+          className="flex gap-5 text-subheader font-semibold mb-2"
+          style={{ alignSelf: "flex-end" }}
+        >
+          <li className="custom-button">
             <NavLink to="/">Dashboard</NavLink>
           </li>
-          <li>
+          <li className="custom-button">
             <NavLink to="/income">Income</NavLink>
           </li>
-          <li>
+          <li className="custom-button">
             <NavLink to="/spending">Spending</NavLink>
           </li>
-          <li>
+          <li className="custom-button">
             <button onClick={SignOut}>Sign Out</button>
           </li>
         </ul>

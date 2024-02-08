@@ -10,7 +10,7 @@ export default {
         DEFAULT: '#1a1a1a',
       },
       textColor: {
-        DEFAULT: '#d6d6d6',
+        DEFAULT: '#c6c6c6',
       },
       fontSize: {
         DEFAULT: '1.25rem',
