@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import Home from "./Home";
+import Dashboard from "./Dashboard";
 import About from "./About";
 
 // icons
@@ -21,7 +21,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Root />} caseSensitive={true}>
-          <Route index element={<Home />} />
+          <Route index element={<Dashboard />} />
           <Route path="/about" element={<About />} />
         </Route>
       </Routes>
@@ -38,7 +38,7 @@ function Root(props) {
         <ul className="flex gap-5">
           <h1 className="">Easy Recipes</h1>
           <li>
-            <NavLink to="/">Home</NavLink>
+            <NavLink to="/">Dashboard</NavLink>
           </li>
           <li>
             <NavLink to="/about">About</NavLink>
@@ -47,7 +47,7 @@ function Root(props) {
       </nav>
 
       <div
-        className="bg h-full flex-grow"
+        className="bg h-full flex-grow px-20"
         style={{ minHeight: "calc(100vh - 17.5rem)" }}
       >
         <main>{children || <Outlet />}</main>
