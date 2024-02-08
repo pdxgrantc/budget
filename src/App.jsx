@@ -31,9 +31,10 @@ export default function App() {
 
 function Root(props) {
   const { children } = props;
+
   return (
-    <div className="text bg-black min-h-screen w-full">
-      <nav className="h-20">
+    <div className="text min-h-screen w-full">
+      <nav className="h-20 bg-black px-20">
         <ul className="flex gap-5">
           <h1 className="">Easy Recipes</h1>
           <li>
@@ -44,25 +45,32 @@ function Root(props) {
           </li>
         </ul>
       </nav>
-      <main>{children || <Outlet />}</main>
 
-      <footer className="bg-black mx-auto h-20 w-fit flex flex-col gap-2">
-        <div className="h-16"></div>
-        <div className="flex gap-6">
-          <OutsideLink link="https://www.github.com/pdxgrantc">
-            <GitHubLogo className="h-[4rem] w-auto py-2 mx--auto text-button hover:text-button_hover" />
-          </OutsideLink>
-          <OutsideLink link="mailto:pdxgrantc@gmail.com">
-            <MailLogo className="h-[4rem] py-0 w-auto text-button hover:text-button_hover" />
-          </OutsideLink>
-          <OutsideLink link="https://pdxgrantc.com/">
-            <AboutLogo className="h-[3.5rem] w-auto text-button hover:text-button_hover" />
-          </OutsideLink>
-          <OutsideLink link="https://www.linkedin.com/in/pdxgrantc">
-            <LinkedLogo className="h-[3.5rem] w-auto text-button hover:text-button_hover" />
-          </OutsideLink>
+      <div
+        className="bg h-full flex-grow"
+        style={{ minHeight: "calc(100vh - 17.5rem)" }}
+      >
+        <main>{children || <Outlet />}</main>
+      </div>
+
+      <footer className="bg-black px-20 h-[12.5rem] flex justify-around flex-col">
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-6 w-fit mx-auto">
+            <OutsideLink link="https://www.github.com/pdxgrantc">
+              <GitHubLogo className="h-[4rem] w-auto py-2 mx--auto text-button hover:text-button_hover" />
+            </OutsideLink>
+            <OutsideLink link="mailto:pdxgrantc@gmail.com">
+              <MailLogo className="h-[4rem] py-0 w-auto text-button hover:text-button_hover" />
+            </OutsideLink>
+            <OutsideLink link="https://pdxgrantc.com/">
+              <AboutLogo className="h-[3.5rem] w-auto text-button hover:text-button_hover" />
+            </OutsideLink>
+            <OutsideLink link="https://www.linkedin.com/in/pdxgrantc">
+              <LinkedLogo className="h-[3.5rem] w-auto text-button hover:text-button_hover" />
+            </OutsideLink>
+          </div>
+          <p className="mx-auto">Grant Conklin - 2024</p>
         </div>
-        <p className="mx-auto">Grant Conklin - 2024</p>
       </footer>
     </div>
   );

@@ -6,6 +6,9 @@ export default {
   ],
   theme: {
     extend: {
+      backgroundColor: {
+        DEFAULT: '#1a1a1a',
+      },
       textColor: {
         DEFAULT: '#d6d6d6',
       },
