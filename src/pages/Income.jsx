@@ -15,6 +15,7 @@ import {
   orderBy,
   limit,
   where,
+  onSnapshot,
 } from "firebase/firestore";
 
 export default function Income() {
@@ -39,23 +40,21 @@ function MonthlyEarning() {
   const [user] = useAuthState(auth);
   const [monthlyEarnings, setMonthlyEarnings] = useState(null);
 
-  // pull the user's monthly earnings from firestore
+
   useEffect(() => {
-    // pull all transactions where the date is within the current month
-    const fetchCurrentMonthEarnings = async () => {
-      const incomeRef = collection(db, "users", user.uid, "income");
-      const q = query(
-        incomeRef,
-        orderBy("date", "desc"),
-        where(
-          "date",
-          ">",
-          new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-        )
-      );
-      const incomeSnapshot = await getDocs(q);
-      // print the data to the console
-      const docs = incomeSnapshot.docs.map((doc) => doc.data());
+    // subscribe to user's income collection and pull the current month's earnings
+    const incomeRef = collection(db, "users", user.uid, "income");
+    const q = query(
+      incomeRef,
+      orderBy("date", "desc"),
+      where(
+        "date",
+        ">",
+        new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+      )
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map((doc) => doc.data());
 
       // add the amount of each transaction to the total
       var total = 0;
@@ -63,9 +62,11 @@ function MonthlyEarning() {
         total += Number(doc.amount);
       });
       setMonthlyEarnings(total);
-    };
+    });
 
-    fetchCurrentMonthEarnings();
+    return () => {
+      unsubscribe();
+    }
   }, [user]);
 
   return (
