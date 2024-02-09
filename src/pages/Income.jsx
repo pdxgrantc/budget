@@ -57,8 +57,6 @@ function LatestTransactions() {
     fetchTransactions();
   }, [user]);
 
-  console.log(transactions);
-
   return (
     <>
       {transactions !== null && (
