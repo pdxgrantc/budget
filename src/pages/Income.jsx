@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet";
 // Firebase
 import { auth, db } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, collection, addDoc } from "firebase/firestore";
 
 export default function Income() {
   return (
@@ -42,6 +42,9 @@ function AddTransaction() {
   const [user] = useAuthState(auth);
   const [budgetCategories, setBudgetCategories] = useState(null);
 
+  const [amount, setAmount] = useState(0);
+  const [category, setCategory] = useState("");
+
   // pull the user's budget categories from firestore
   useEffect(() => {
     const fetchBudgetCategories = async () => {
@@ -56,12 +59,29 @@ function AddTransaction() {
     fetchBudgetCategories();
   }, [user]);
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const incomeRef = collection(db, "users", user.uid, "income");
+    const newIncomeDoc = {
+      amount: amount,
+      category: category,
+    };
+
+    try {
+      const docRef = await addDoc(incomeRef, newIncomeDoc);
+      console.log(`Document written with ID: ${docRef.id}`);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  };
+
   return (
     <>
       {budgetCategories !== null && (
         <div>
           <h2 className="text-lheader font-light">Add Transaction</h2>
-          <form>
+          <form onSubmit={handleSubmit}>
             <label htmlFor="amount">Amount:</label>
             <input
               className="rounded"
@@ -70,15 +90,23 @@ function AddTransaction() {
               name="amount"
               placeholder="Enter Amount"
               required
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
             />
             <label htmlFor="category">Category:</label>
-            <select id="category" name="category" className="rounded">
-              {budgetCategories.map((category) => (
-                <option key={category} value={category}>
+            <select
+              id="category"
+              name="category"
+              className="rounded"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option value="">Select Category</option>
+              {budgetCategories.map((category, index) => (
+                <option key={index} value={category}>
                   {category}
                 </option>
               ))}
-              <option value="Other">Other</option>
             </select>
             <button type="submit">Add Transaction</button>
           </form>
