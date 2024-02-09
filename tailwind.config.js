@@ -13,7 +13,7 @@ export default {
         DEFAULT: '#c6c6c6',
       },
       fontSize: {
-        DEFAULT: '1.25rem',
+        DEFAULT: '1.75rem',
         title: '5rem',
         xxlheader: '4.25rem',
         xlheader: '3.75rem',

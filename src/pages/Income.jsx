@@ -25,9 +25,11 @@ export default function Income() {
       </Helmet>
       <div>
         <h1 className="text-title font-semibold">Income</h1>
-        <MonthlyEarning />
-        <LatestTransactions />
-        <AddTransaction />
+        <div className="flex flex-col gap-5">
+          <MonthlyEarning />
+          <LatestTransactions />
+          <AddTransaction />
+        </div>
       </div>
     </>
   );
@@ -69,8 +71,8 @@ function MonthlyEarning() {
   return (
     <>
       {monthlyEarnings !== null && (
-        <div>
-          <h2>This Month You&apos;ve Earned:</h2>
+        <div className="flex gap-2 text-xl">
+          <h2>This month you have earned:</h2>
           <p>${Number(monthlyEarnings).toFixed(2)}</p>
         </div>
       )}
@@ -97,7 +99,7 @@ function LatestTransactions() {
 
   return (
     <>
-      {transactions !== null && (
+      {transactions && transactions.length > 0 && (
         <div>
           <h2 className="text-lheader font-light">Latest Transactions</h2>
           <div>
