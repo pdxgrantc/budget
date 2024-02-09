@@ -14,6 +14,7 @@ import {
   query,
   orderBy,
   limit,
+  where,
 } from "firebase/firestore";
 
 export default function Income() {
@@ -33,10 +34,47 @@ export default function Income() {
 }
 
 function MonthlyEarning() {
+  const [user] = useAuthState(auth);
+  const [monthlyEarnings, setMonthlyEarnings] = useState(null);
+
+  // pull the user's monthly earnings from firestore
+  useEffect(() => {
+    // pull all transactions where the date is within the current month
+    const fetchCurrentMonthEarnings = async () => {
+      const incomeRef = collection(db, "users", user.uid, "income");
+      const q = query(
+        incomeRef,
+        orderBy("date", "desc"),
+        where(
+          "date",
+          ">",
+          new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+        )
+      );
+      const incomeSnapshot = await getDocs(q);
+      // print the data to the console
+      const docs = incomeSnapshot.docs.map((doc) => doc.data());
+
+      // add the amount of each transaction to the total
+      var total = 0;
+      docs.forEach((doc) => {
+        total += Number(doc.amount);
+      });
+      setMonthlyEarnings(total);
+    };
+
+    fetchCurrentMonthEarnings();
+  }, [user]);
+
   return (
-    <div>
-      <h2>This Month You&apos;ve Earned:</h2>
-    </div>
+    <>
+      {monthlyEarnings !== null && (
+        <div>
+          <h2>This Month You&apos;ve Earned:</h2>
+          <p>${Number(monthlyEarnings).toFixed(2)}</p>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -75,17 +113,13 @@ function TransactionList({ transactions }) {
   return (
     <div className="overflow-x-auto">
       <table className="table-auto w-fit text-left whitespace-nowrap">
-        <thead>
-          <tr className="font-semibold">
-            <th className="px-1 py-1">Amount</th>
-            <th className="px-1 py-1">Category</th>
-            <th className="px-1 py-1">Date</th>
-          </tr>
-        </thead>
+        <thead></thead>
         <tbody>
           {transactions.map((transaction, index) => (
             <tr key={index}>
-              <td className="px-1 py-1">{transaction.amount}</td>
+              <td className="px-1 py-1">
+                ${Number(transaction.amount).toFixed(2)}
+              </td>
               <td className="px-1 py-1">{transaction.category}</td>
               <td className="px-1 py-1">
                 {transaction.date.toDate().toLocaleString("en-US", {
