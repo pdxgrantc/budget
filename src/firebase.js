@@ -39,6 +39,15 @@ const SignIn = async () => {
                 photoURL: result.user.photoURL,
                 uid: result.user.uid,
                 accountCreated: new Date(),
+                currentBalance: 0,
+                budgetCategories: [
+                    "Groceries",
+                    "Rent",
+                    "Utilities",
+                    "Entertainment",
+                    "Transportation",
+                    "Restaurants",
+                ]
             });
         }
     } catch (error) {
