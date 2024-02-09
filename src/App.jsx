@@ -78,14 +78,14 @@ function Root(props) {
       <div>
         {user ? (
           <div
-            className="bg h-full flex-grow px-20"
+            className="bg h-full flex-grow px-20 py-10"
             style={{ minHeight: "calc(100vh - 17.5rem)" }}
           >
             <main>{children || <Outlet />}</main>
           </div>
         ) : (
           <div
-            className="bg h-full flex-grow px-20"
+            className="bg h-full flex-grow px-20 py-10"
             style={{
               minHeight: "calc(100vh - 17.5rem)",
               display: "flex",

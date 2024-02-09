@@ -1,10 +1,20 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
+import PropTypes from "prop-types";
 
 // Firebase
 import { auth, db } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { doc, getDoc, collection, addDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  orderBy,
+  limit,
+} from "firebase/firestore";
 
 export default function Income() {
   return (
@@ -31,12 +41,75 @@ function MonthlyEarning() {
 }
 
 function LatestTransactions() {
+  const [user] = useAuthState(auth);
+  // pull the last 10 income transactions from firestore if they exist
+  const [transactions, setTransactions] = useState(null);
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const incomeRef = collection(db, "users", user.uid, "income");
+      const q = query(incomeRef, orderBy("date", "desc"), limit(10)); // assuming the date field is named 'date'
+      const incomeSnapshot = await getDocs(q);
+      const incomeData = incomeSnapshot.docs.map((doc) => doc.data());
+      setTransactions(incomeData);
+    };
+
+    fetchTransactions();
+  }, [user]);
+
+  console.log(transactions);
+
   return (
-    <div>
-      <h2 className="text-lheader font-light">Latest Transactions</h2>
+    <>
+      {transactions !== null && (
+        <div>
+          <h2 className="text-lheader font-light">Latest Transactions</h2>
+          <div>
+            <TransactionList transactions={transactions} />
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+function TransactionList({ transactions }) {
+  return (
+    <div className="overflow-x-auto">
+      <table className="table-auto w-fit text-left whitespace-nowrap">
+        <thead>
+          <tr className="font-semibold">
+            <th className="px-1 py-1">Amount</th>
+            <th className="px-1 py-1">Category</th>
+            <th className="px-1 py-1">Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {transactions.map((transaction, index) => (
+            <tr key={index}>
+              <td className="px-1 py-1">{transaction.amount}</td>
+              <td className="px-1 py-1">{transaction.category}</td>
+              <td className="px-1 py-1">
+                {transaction.date.toDate().toLocaleString("en-US", {
+                  month: "numeric",
+                  day: "numeric",
+                  year: "numeric",
+                  hour: "numeric",
+                  minute: "numeric",
+                })}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
+
+// add props validation
+TransactionList.propTypes = {
+  transactions: PropTypes.array.isRequired,
+};
 
 function AddTransaction() {
   const [user] = useAuthState(auth);
@@ -66,13 +139,13 @@ function AddTransaction() {
     const newIncomeDoc = {
       amount: amount,
       category: category,
+      date: new Date(),
     };
 
     try {
-      const docRef = await addDoc(incomeRef, newIncomeDoc);
-      console.log(`Document written with ID: ${docRef.id}`);
+      await addDoc(incomeRef, newIncomeDoc);
     } catch (e) {
-      console.error("Error adding document: ", e);
+      alert("Error writing income transaction please try again.");
     }
   };
 
