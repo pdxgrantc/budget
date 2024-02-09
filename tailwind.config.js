@@ -23,6 +23,9 @@ export default {
         xxl: '2rem',
         xl: '1.75rem',
       },
+      rounded: {
+        DEFAULT: '0.5rem',
+      },
     },
   },
   plugins: [],
