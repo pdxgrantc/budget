@@ -40,14 +40,21 @@ const SignIn = async () => {
                 uid: result.user.uid,
                 accountCreated: new Date(),
                 currentBalance: 0,
-                budgetCategories: [
+                spendingCategories: [
                     "Groceries",
                     "Rent",
                     "Utilities",
                     "Entertainment",
                     "Transportation",
                     "Restaurants",
-                ]
+                    "Other",
+                ],
+                incomeCategories: [
+                    "Salary",
+                    "Investments",
+                    "Gifts",
+                    "Other",
+                ],
             });
         }
     } catch (error) {

@@ -16,7 +16,11 @@ import {
   limit,
   where,
   onSnapshot,
+  deleteDoc,
 } from "firebase/firestore";
+
+// Icons
+import { MdOutlineDeleteOutline as DeleteIcon } from "react-icons/md";
 
 export default function Income() {
   return (
@@ -39,7 +43,6 @@ export default function Income() {
 function MonthlyEarning() {
   const [user] = useAuthState(auth);
   const [monthlyEarnings, setMonthlyEarnings] = useState(null);
-
 
   useEffect(() => {
     // subscribe to user's income collection and pull the current month's earnings
@@ -66,7 +69,7 @@ function MonthlyEarning() {
 
     return () => {
       unsubscribe();
-    }
+    };
   }, [user]);
 
   return (
@@ -113,6 +116,21 @@ function LatestTransactions() {
 }
 
 function TransactionList({ transactions }) {
+  const [user] = useAuthState(auth);
+  const handleDelete = async (id) => {
+    const incomeRef = collection(db, "users", user.uid, "income");
+    const q = query(incomeRef, orderBy("date", "desc"), limit(10));
+    const incomeSnapshot = await getDocs(q);
+    const incomeData = incomeSnapshot.docs.map((doc) => doc.data());
+    const docToDelete = incomeData[id];
+
+    try {
+      await deleteDoc(doc(incomeRef, docToDelete.id));
+    } catch (e) {
+      alert("Error deleting income transaction please try again.");
+    }
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="table-auto w-fit text-left whitespace-nowrap">
@@ -132,6 +150,14 @@ function TransactionList({ transactions }) {
                   hour: "numeric",
                   minute: "numeric",
                 })}
+              </td>
+              <td>
+                <button
+                  className="custom-button"
+                  onClick={() => handleDelete(index)}
+                >
+                  <DeleteIcon />
+                </button>
               </td>
             </tr>
           ))}
