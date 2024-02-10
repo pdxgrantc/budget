@@ -40,6 +40,12 @@ const SignIn = async () => {
                 uid: result.user.uid,
                 accountCreated: new Date(),
                 currentBalance: 0,
+                incomeCategories: [
+                    "Salary",
+                    "Investments",
+                    "Gifts",
+                    "Other",
+                ],
                 spendingCategories: [
                     "Groceries",
                     "Rent",
@@ -47,12 +53,6 @@ const SignIn = async () => {
                     "Entertainment",
                     "Transportation",
                     "Restaurants",
-                    "Other",
-                ],
-                incomeCategories: [
-                    "Salary",
-                    "Investments",
-                    "Gifts",
                     "Other",
                 ],
             });
