@@ -104,8 +104,6 @@ function LatestTransactions() {
     fetchTransactions();
   }, [user]);
 
-  console.log(transactions);
-
   return (
     <>
       {transactions && transactions.length > 0 && (
