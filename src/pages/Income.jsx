@@ -10,7 +10,7 @@ import {
   getDoc,
   collection,
   addDoc,
-  getDocs,
+  setDoc,
   query,
   orderBy,
   limit,
@@ -90,18 +90,19 @@ function LatestTransactions() {
   const [transactions, setTransactions] = useState(null);
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      const incomeRef = collection(db, "users", user.uid, "income");
-      const q = query(incomeRef, orderBy("date", "desc"), limit(10)); // assuming the date field is named 'date'
-      const incomeSnapshot = await getDocs(q);
-      const incomeData = incomeSnapshot.docs.map((doc) => ({
+    const incomeRef = collection(db, "users", user.uid, "income");
+    const q = query(incomeRef, orderBy("date", "desc"), limit(10)); // assuming the date field is named 'date'
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const incomeData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setTransactions(incomeData);
-    };
+    });
 
-    fetchTransactions();
+    // Cleanup function to unsubscribe from the snapshot on component unmount
+    return () => unsubscribe();
   }, [user]);
 
   return (
@@ -125,6 +126,19 @@ function TransactionList({ transactions }) {
       await deleteDoc(doc(db, "users", user.uid, "income", id));
     } catch (e) {
       alert("Error deleting income transaction please try again.");
+    }
+
+    // pull the user docuemnt from firestore and update the current balance
+    const userRef = doc(db, "users", user.uid);
+    const userDocSnap = await getDoc(userRef);
+    const currentBalance = userDocSnap.data().currentBalance;
+    const newBalance = currentBalance - transactions.find((t) => t.id === id).amount;
+
+    try {
+      await setDoc(userRef, { currentBalance: newBalance }, { merge: true });
+    }
+    catch (e) {
+      alert("Error updating current balance please try again.");
     }
   };
 
@@ -183,7 +197,7 @@ function AddTransaction() {
       const userDocSnap = await getDoc(userRef);
 
       if (userDocSnap.exists()) {
-        setBudgetCategories(userDocSnap.data().budgetCategories);
+        setBudgetCategories(userDocSnap.data().incomeCategories);
       }
     };
 
@@ -204,6 +218,19 @@ function AddTransaction() {
       await addDoc(incomeRef, newIncomeDoc);
     } catch (e) {
       alert("Error writing income transaction please try again.");
+    }
+
+    // pull the user docuemnt from firestore and update the current balance
+    const userRef = doc(db, "users", user.uid);
+    const userDocSnap = await getDoc(userRef);
+    const currentBalance = userDocSnap.data().currentBalance;
+    const newBalance = currentBalance + Number(amount);
+
+    try {
+      await setDoc(userRef, { currentBalance: newBalance }, { merge: true });
+    }
+    catch (e) {
+      alert("Error updating current balance please try again.");
     }
   };
 
