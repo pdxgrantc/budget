@@ -94,12 +94,17 @@ function LatestTransactions() {
       const incomeRef = collection(db, "users", user.uid, "income");
       const q = query(incomeRef, orderBy("date", "desc"), limit(10)); // assuming the date field is named 'date'
       const incomeSnapshot = await getDocs(q);
-      const incomeData = incomeSnapshot.docs.map((doc) => doc.data());
+      const incomeData = incomeSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setTransactions(incomeData);
     };
 
     fetchTransactions();
   }, [user]);
+
+  console.log(transactions);
 
   return (
     <>
@@ -118,14 +123,8 @@ function LatestTransactions() {
 function TransactionList({ transactions }) {
   const [user] = useAuthState(auth);
   const handleDelete = async (id) => {
-    const incomeRef = collection(db, "users", user.uid, "income");
-    const q = query(incomeRef, orderBy("date", "desc"), limit(10));
-    const incomeSnapshot = await getDocs(q);
-    const incomeData = incomeSnapshot.docs.map((doc) => doc.data());
-    const docToDelete = incomeData[id];
-
     try {
-      await deleteDoc(doc(incomeRef, docToDelete.id));
+      await deleteDoc(doc(db, "users", user.uid, "income", id));
     } catch (e) {
       alert("Error deleting income transaction please try again.");
     }
@@ -136,8 +135,8 @@ function TransactionList({ transactions }) {
       <table className="table-auto w-fit text-left whitespace-nowrap">
         <thead></thead>
         <tbody>
-          {transactions.map((transaction, index) => (
-            <tr key={index}>
+          {transactions.map((transaction) => (
+            <tr key={transaction.id}>
               <td className="px-1 py-1">
                 ${Number(transaction.amount).toFixed(2)}
               </td>
@@ -154,7 +153,7 @@ function TransactionList({ transactions }) {
               <td>
                 <button
                   className="custom-button"
-                  onClick={() => handleDelete(index)}
+                  onClick={() => handleDelete(transaction.id)}
                 >
                   <DeleteIcon />
                 </button>
@@ -213,36 +212,46 @@ function AddTransaction() {
   return (
     <>
       {budgetCategories !== null && (
-        <div>
+        <div className="w-fit">
           <h2 className="text-lheader font-light">Add Transaction</h2>
-          <form onSubmit={handleSubmit}>
-            <label htmlFor="amount">Amount:</label>
-            <input
-              className="rounded"
-              type="number"
-              id="amount"
-              name="amount"
-              placeholder="Enter Amount"
-              required
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-            />
-            <label htmlFor="category">Category:</label>
-            <select
-              id="category"
-              name="category"
-              className="rounded"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-            >
-              <option value="">Select Category</option>
-              {budgetCategories.map((category, index) => (
-                <option key={index} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-            <button type="submit">Add Transaction</button>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
+            <div className="flex gap-5">
+              <label htmlFor="category" className="font-semibold">
+                Category:
+              </label>
+              <select
+                id="category"
+                name="category"
+                className="rounded w-fit"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option value="">Select Category</option>
+                {budgetCategories.map((category, index) => (
+                  <option key={index} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex gap-5">
+              <label htmlFor="amount" className="font-semibold">
+                Amount:
+              </label>
+              <input
+                className="rounded w-fit"
+                type="number"
+                id="amount"
+                name="amount"
+                placeholder="Enter Amount"
+                required
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="w-fit custom-button">
+              Add Transaction
+            </button>
           </form>
         </div>
       )}

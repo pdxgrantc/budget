@@ -27,3 +27,15 @@
 .active {
     color: white;
 }
+
+input {
+    color: black;
+    outline: none;
+    padding-left: 4px;
+}
+
+select {
+    color: black;
+    outline: none;
+    padding-left: 2px;
+}
