@@ -22,6 +22,9 @@ export default {
         subheader: '2.25rem',
         xxl: '2rem',
         xl: '1.75rem',
+        l: '1.5rem',
+        m: '1.25rem',
+        s: '1rem',
       },
       rounded: {
         DEFAULT: '0.5rem',

@@ -99,6 +99,7 @@ function Root(props) {
 
       <footer className="bg-black px-20 h-[12.5rem] flex justify-around flex-col">
         <div className="flex flex-col gap-2">
+          <p className="mx-auto">Find me here</p>
           <div className="flex gap-6 w-fit mx-auto">
             <OutsideLink link="https://www.github.com/pdxgrantc">
               <GitHubLogo className="h-[4rem] w-auto py-2 mx--auto text-button hover:text-button_hover" />
@@ -110,7 +111,7 @@ function Root(props) {
               <LinkedLogo className="h-[3.5rem] w-auto text-button hover:text-button_hover" />
             </OutsideLink>
           </div>
-          <p className="mx-auto">Grant Conklin - 2024</p>
+          <p className="mx-auto text-m">Grant Conklin - 2024</p>
         </div>
       </footer>
     </div>
