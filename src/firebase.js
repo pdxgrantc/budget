@@ -40,6 +40,7 @@ const SignIn = async () => {
                 uid: result.user.uid,
                 accountCreated: new Date(),
                 currentBalance: 0,
+                userVersion: 1,
                 incomeCategories: [
                     "Salary",
                     "Investments",
