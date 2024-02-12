@@ -71,6 +71,15 @@ function Root(props) {
               <button onClick={SignOut}>Sign Out</button>
             )}
           </li>
+          {user && (
+            <li>
+              <img
+                src={user?.photoURL}
+                alt="User"
+                className="h-8 w-8 rounded-full my-auto"
+              />
+            </li>
+          )}
         </ul>
       </nav>
 

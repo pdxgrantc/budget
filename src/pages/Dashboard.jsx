@@ -5,7 +5,19 @@ import PropTypes from "prop-types";
 // Firebase
 import { auth, db } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  collection,
+  onSnapshot,
+  where,
+  orderBy,
+  query,
+} from "firebase/firestore";
+
+// Chart.js
+import { Line } from "react-chartjs-2";
+import { Chart, registerables, CategoryScale } from "chart.js";
 
 export default function Dashboard() {
   const [user] = useAuthState(auth);
@@ -19,6 +31,7 @@ export default function Dashboard() {
         <h2 className="text-lheader font-semibold">{user.displayName}</h2>
       </div>
       <CurrentBalance />
+      <MonthlyEarning />
     </>
   );
 }
@@ -53,8 +66,66 @@ function CurrentBalance() {
   );
 }
 
-import { Line } from "react-chartjs-2";
-import { Chart, registerables, CategoryScale } from "chart.js";
+function MonthlyEarning() {
+  const [user] = useAuthState(auth);
+  const [monthlyEarnings, setMonthlyEarnings] = useState(null);
+
+  useEffect(() => {
+    // subscribe to the users income collection and pull the last 30 days of earnings and put them into an array by day
+    const incomeRef = collection(db, "users", user.uid, "income");
+    const q = query(
+      incomeRef,
+      orderBy("date", "desc"),
+      where(
+        "date",
+        ">",
+        new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+      )
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map((doc) => doc.data());
+
+      const sortedByDay = Array.from({ length: 30 }, (_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const formattedDate = `${date.getDate()}-${date.getMonth() + 1}`; // JavaScript months are 0-indexed
+
+        const docsForDate = docs.filter((doc) => {
+          const docDate = doc.date.toDate();
+          const docFormattedDate = `${docDate.getDate()}-${
+            docDate.getMonth() + 1
+          }`;
+          return docFormattedDate === formattedDate;
+        });
+
+        const totalAmountForDate = docsForDate.reduce(
+          (total, doc) => total + Number(doc.amount),
+          0
+        );
+
+        return totalAmountForDate || 0;
+      });
+
+      setMonthlyEarnings(sortedByDay);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [user]);
+
+  return (
+    <>
+      {monthlyEarnings !== null && (
+        <div className="flex gap-2 text-xl">
+          <h2>This month you have earned:</h2>
+          <LineGraph inputData={monthlyEarnings} inputLabel="Earnings" />
+        </div>
+      )}
+    </>
+  );
+}
 
 Chart.register(...registerables);
 
@@ -66,7 +137,7 @@ function LineGraph({
   inputBackgroundColor,
   inputBorderColor,
 }) {
-  const [input, setInput] = useState([0, 0, 0, 0, 0, 0, 0]);
+  const [input, setInput] = useState([]);
   const [label, setLabel] = useState("");
   const [backgroundColor, setBackgroundColor] = useState(
     "rgba(75,192,192,0.5)"
@@ -74,6 +145,7 @@ function LineGraph({
   const [borderColor, setBorderColor] = useState("rgba(75,192,192,1)");
 
   useEffect(() => {
+    console.log("data recieved", inputData);
     setInput(inputData);
   }, [inputData]);
 
@@ -102,8 +174,23 @@ function LineGraph({
   }, [inputBorderColor]);
 
   const options = {
+    title: {
+      display: false,
+      text: "Earnings",
+      font: {
+        size: 25,
+      },
+    },
     scales: {
       x: {
+        title: {
+          display: true,
+          text: "Date",
+          color: "#d6d6d6", // Change the x-axis title text color here
+          font: {
+            size: 18, // Change the x-axis title font size here
+          },
+        },
         grid: {
           color: "#383838", // Change the color of the x-axis lines here
         },
@@ -115,6 +202,14 @@ function LineGraph({
         },
       },
       y: {
+        title: {
+          display: true,
+          text: "Amount",
+          color: "#d6d6d6", // Change the y-axis title text color here
+          font: {
+            size: 18, // Change the y-axis title font size here
+          },
+        },
         grid: {
           color: "#383838", // Change the color of the x-axis lines here
         },
@@ -128,6 +223,7 @@ function LineGraph({
     },
     plugins: {
       legend: {
+        display: false,
         labels: {
           color: "#d6d6d6", // Change the label text color here
           font: {
@@ -138,16 +234,14 @@ function LineGraph({
     },
   };
 
+  const labels = Array.from({ length: 30 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    return `${date.toLocaleString('default', { month: 'short' })} ${date.getDate()}`;
+  });
+
   const data = {
-    labels: [
-      "6 Days Ago",
-      "5 Days Ago",
-      "4 Days Ago",
-      "3 Days Ago",
-      "2 Days Ago",
-      "Yesterday",
-      "Today",
-    ],
+    labels: labels,
     datasets: [
       {
         label: label,
