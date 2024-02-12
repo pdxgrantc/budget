@@ -122,23 +122,29 @@ function LatestTransactions() {
 function TransactionList({ transactions }) {
   const [user] = useAuthState(auth);
   const handleDelete = async (id) => {
-    try {
-      await deleteDoc(doc(db, "users", user.uid, "spending", id));
-    } catch (e) {
-      alert("Error deleting spending transaction please try again.");
-    }
+    const userConfrim = confirm(
+      "Are you sure you want to delete this transaction?"
+    );
 
-    // pull the user docuemnt from firestore and update the current balance
-    const userRef = doc(db, "users", user.uid);
-    const userDocSnap = await getDoc(userRef);
-    const currentBalance = userDocSnap.data().currentBalance;
-    const newBalance = currentBalance - transactions.find((t) => t.id === id).amount;
+    if (userConfrim) {
+      try {
+        await deleteDoc(doc(db, "users", user.uid, "spending", id));
+      } catch (e) {
+        alert("Error deleting spending transaction please try again.");
+      }
 
-    try {
-      await setDoc(userRef, { currentBalance: newBalance }, { merge: true });
-    }
-    catch (e) {
-      alert("Error updating current balance please try again.");
+      // pull the user docuemnt from firestore and update the current balance
+      const userRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userRef);
+      const currentBalance = userDocSnap.data().currentBalance;
+      const newBalance =
+        currentBalance - transactions.find((t) => t.id === id).amount;
+
+      try {
+        await setDoc(userRef, { currentBalance: newBalance }, { merge: true });
+      } catch (e) {
+        alert("Error updating current balance please try again.");
+      }
     }
   };
 
@@ -228,8 +234,7 @@ function AddTransaction() {
 
     try {
       await setDoc(userRef, { currentBalance: newBalance }, { merge: true });
-    }
-    catch (e) {
+    } catch (e) {
       alert("Error updating current balance please try again.");
     }
   };
