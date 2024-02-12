@@ -159,6 +159,7 @@ function TransactionList({ transactions }) {
                 ${Number(transaction.amount).toFixed(2)}
               </td>
               <td className="px-1 py-1">{transaction.category}</td>
+              <td className="px-1 py-1">{transaction.description}</td>
               <td className="px-1 py-1">
                 {transaction.date.toDate().toLocaleString("en-US", {
                   month: "numeric",
@@ -195,6 +196,7 @@ function AddTransaction() {
 
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState("");
+  const [description, setDescription] = useState("");
 
   // pull the user's budget categories from firestore
   useEffect(() => {
@@ -213,10 +215,17 @@ function AddTransaction() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (category === "") {
+      alert("Please select a category");
+      return;
+    }
+
     const incomeRef = collection(db, "users", user.uid, "income");
+
     const newIncomeDoc = {
       amount: amount,
       category: category,
+      description: description,
       date: new Date(),
     };
 
@@ -277,6 +286,20 @@ function AddTransaction() {
                 required
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
+              />
+            </div>
+            <div  className="flex gap-5">
+              <label htmlFor="description" className="font-semibold">
+                Description:
+              </label>
+              <input
+                className="rounded w-fit"
+                type="text"
+                id="description"
+                name="description"
+                placeholder="Enter Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
               />
             </div>
             <button type="submit" className="w-fit custom-button">
