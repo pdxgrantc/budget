@@ -124,34 +124,6 @@ function LatestTransactions() {
 }
 
 function TransactionList({ transactions }) {
-  const [user] = useAuthState(auth);
-  const handleDelete = async (id) => {
-    const userConfrim = confirm(
-      "Are you sure you want to delete this transaction?"
-    );
-
-    if (userConfrim) {
-      try {
-        await deleteDoc(doc(db, "users", user.uid, "spending", id));
-      } catch (e) {
-        alert("Error deleting spending transaction please try again.");
-      }
-
-      // pull the user docuemnt from firestore and update the current balance
-      const userRef = doc(db, "users", user.uid);
-      const userDocSnap = await getDoc(userRef);
-      const currentBalance = userDocSnap.data().currentBalance;
-      const newBalance =
-        currentBalance - transactions.find((t) => t.id === id).amount;
-
-      try {
-        await setDoc(userRef, { currentBalance: newBalance }, { merge: true });
-      } catch (e) {
-        alert("Error updating current balance please try again.");
-      }
-    }
-  };
-
   return (
     <div className="overflow-x-auto">
       <table className="table-auto w-fit text-left whitespace-nowrap">
@@ -318,8 +290,8 @@ function AddTransaction() {
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
-            <button type="submit" className="w-fit custom-button">
-              Add Transaction
+            <button type="submit" className="border-b-2 w-fit custom-button">
+              Submit Transaction
             </button>
           </form>
         </div>

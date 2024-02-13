@@ -331,7 +331,7 @@ function AddTransaction() {
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
-            <button type="submit" className="border-b w-fit custom-button">
+            <button type="submit" className="border-b-2 w-fit custom-button">
               Submit Transaction
             </button>
           </form>
