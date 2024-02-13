@@ -213,6 +213,11 @@ function AddTransaction() {
     } catch (e) {
       alert("Error updating current balance please try again.");
     }
+
+    // reset the form
+    setAmount(0);
+    setCategory("");
+    setDescription("");
   };
 
   return (
