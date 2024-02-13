@@ -109,8 +109,8 @@ function Root(props) {
         <div className="flex flex-col gap-2">
           <p className="mx-auto">Find me here</p>
           <div className="flex gap-6 w-fit mx-auto">
-            <OutsideLink link="https://www.github.com/pdxgrantc">
-              <GitHubLogo className="h-[4rem] w-auto py-2 mx--auto text-button hover:text-button_hover" />
+            <OutsideLink className="" link="https://www.github.com/pdxgrantc">
+              <GitHubLogo className="h-[3.25rem] w-auto mx-auto text-button hover:text-button_hover" />
             </OutsideLink>
             <OutsideLink link="https://pdxgrantc.com/">
               <AboutLogo className="h-[3.5rem] w-auto text-button hover:text-button_hover" />
