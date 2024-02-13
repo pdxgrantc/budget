@@ -12,6 +12,10 @@ export default {
       },
       backgroundColor: {
         DEFAULT: '#1a1a1a',
+        menuBG: '#404040',
+      },
+      colors: {
+        transparent: 'transparent',
       },
       textColor: {
         DEFAULT: '#c6c6c6',
@@ -32,8 +36,9 @@ export default {
         m: '1.25rem',
         s: '1rem',
       },
-      rounded: {
+      borderRadius: {
         DEFAULT: '0.5rem',
+        menu: '1rem',
       },
     },
   },

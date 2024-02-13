@@ -47,12 +47,12 @@ function Root(props) {
   const [user] = useAuthState(auth);
 
   return (
-    <div className="text min-h-screen w-full">
+    <div className="text bg-black min-h-screen w-full">
       <NavBarHost />
       <div>
         {user ? (
           <div
-            className="bg h-full flex-grow px-20 pb-10"
+            className="bg h-full flex-grow on_desktop:px-20 on_mobile:px-[3vw] pb-10"
             style={{ minHeight: "calc(100vh - 17.5rem)" }}
           >
             <main>{children || <Outlet />}</main>
@@ -231,7 +231,7 @@ function MobileNavBar() {
 
   return (
     <>
-      <nav className="h-20 bg-black px-20 flex flex-wrap items-center justify-between relative">
+      <nav className="h-20 bg-black px-[3vw] flex flex-wrap items-center justify-between relative">
         <h1 className="text-lheader font-semibold">EB</h1>
         {user ? (
           <button
@@ -247,7 +247,7 @@ function MobileNavBar() {
         )}
       </nav>
       {menuOpen && (
-        <div className="absolute right-[5rem] bg-black text rounded w-fit">
+        <div className="absolute right-[5rem] bg-menuBG text rounded w-fit p-3">
         <DropdownMenu>
           <MenuItem onClick={closeMenu}>
             <Link to="/">Dashboard</Link>
@@ -278,7 +278,7 @@ DropdownMenu.propTypes = {
 };
 
 function MenuItem({ children, onClick }) {
-  return <div onClick={onClick}>{children}</div>;
+  return <div className="mx-2 px-1 text-white border-b-2 border-transparent hover:border-white" onClick={onClick}>{children}</div>;
 }
 
 // validate prop types
