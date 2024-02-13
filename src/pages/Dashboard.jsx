@@ -21,6 +21,10 @@ import {
 import { Bar } from "react-chartjs-2";
 import { Chart, registerables, CategoryScale } from "chart.js";
 
+// Icons
+import { IoChevronForward as OpenIcon } from "react-icons/io5";
+import { IoChevronDown as ClosedIcon } from "react-icons/io5";
+
 export default function Dashboard() {
   const [user] = useAuthState(auth);
   return (
@@ -340,28 +344,15 @@ function RecentTransactions() {
           <table className="w-full">
             <thead>
               <tr>
+                <th></th>
                 <th className="text-left">Date</th>
-                <th className="text-left">Category</th>
-                <th className="text-left">Description</th>
                 <th className="text-left">Amount</th>
+                <th className="text-left">Category</th>
               </tr>
             </thead>
             <tbody>
               {recentTransactions.map((transaction, index) => (
-                <tr key={index}>
-                  <td>{transaction.date.toDate().toLocaleDateString()}</td>
-                  <td>{transaction.category}</td>
-                  <td>{transaction.description === "" ? ("N/A") : (transaction.description)}</td>
-                  <td
-                    className={
-                      transaction.type === "spending"
-                        ? "text-spending"
-                        : "text-income"
-                    }
-                  >
-                    ${transaction.amount}
-                  </td>
-                </tr>
+                <TransactionRow transaction={transaction} key={index} />
               ))}
             </tbody>
           </table>
@@ -370,3 +361,32 @@ function RecentTransactions() {
     </>
   );
 }
+
+function TransactionRow({ transaction }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <>
+    <tr>
+      <td>
+        <button onClick={() => setIsOpen((prev) => !prev)}>
+          {isOpen ? <ClosedIcon /> : <OpenIcon />}
+        </button>
+      </td>
+      <td>{transaction.date.toDate().toLocaleDateString()}</td>
+      <td>${transaction.amount}</td>
+      <td>{transaction.category}</td>
+    </tr>
+    {isOpen && (
+      <tr>
+        <td colSpan="1"></td>
+        <td colSpan="4">{transaction.description}</td>
+      </tr>
+    )}
+    </>
+  );
+}
+
+TransactionRow.propTypes = {
+  transaction: PropTypes.object,
+};

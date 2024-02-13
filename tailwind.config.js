@@ -23,7 +23,7 @@ export default {
         income: '#00dc00',
       },
       fontSize: {
-        DEFAULT: '1.75rem',
+        DEFAULT: '1.5rem',
         title: '5rem',
         xxlheader: '4.25rem',
         xlheader: '3.75rem',
