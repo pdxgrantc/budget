@@ -139,34 +139,6 @@ function TransactionList({ transactions }) {
         <tbody>
           {transactions.map((transaction) => (
             <TransactionRow key={transaction.id} transaction={transaction} />
-            /*
-            <tr key={transaction.id}>
-              <td className="px-1 py-1">
-                {transaction.date.toDate().toLocaleString("en-US", {
-                  month: "numeric",
-                  day: "numeric",
-                  year: "numeric",
-                })}
-              </td>
-              <td className="px-1 py-1">
-                ${Number(transaction.amount).toFixed(2)}
-              </td>
-              <td className="px-1 py-1">{transaction.category}</td>
-              <td>
-                {transaction.description === ""
-                  ? "N/A"
-                  : transaction.description}
-              </td>
-              <td>
-                <button
-                  className="custom-button"
-                  onClick={() => handleDelete(transaction.id)}
-                >
-                  <DeleteIcon />
-                </button>
-              </td>
-            </tr>
-            */
           ))}
         </tbody>
       </table>
