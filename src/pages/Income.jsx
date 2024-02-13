@@ -30,10 +30,12 @@ export default function Income() {
       </Helmet>
       <div>
         <h1 className="text-title font-semibold">Income</h1>
-        <div className="flex flex-col gap-5">
-          <MonthlyEarning />
-          <LatestTransactions />
+        <div className="grid grid-cols-2 gap-10">
           <AddTransaction />
+          <div className="flex flex-col gap-2">
+            <LatestTransactions />
+            <MonthlyEarning />
+          </div>
         </div>
       </div>
     </>
@@ -151,7 +153,13 @@ function TransactionList({ transactions }) {
   return (
     <div className="overflow-x-auto">
       <table className="table-auto w-fit text-left whitespace-nowrap">
-        <thead></thead>
+        <thead>
+          <th className="px-1 py-1">Amount</th>
+          <th className="px-1 py-1">Category</th>
+          <th className="px-1 py-1">Date</th>
+          <th className="px-1 py-1">Description</th>
+          <th className="px-1 py-1"></th>
+        </thead>
         <tbody>
           {transactions.map((transaction) => (
             <tr key={transaction.id}>
@@ -159,7 +167,6 @@ function TransactionList({ transactions }) {
                 ${Number(transaction.amount).toFixed(2)}
               </td>
               <td className="px-1 py-1">{transaction.category}</td>
-              <td className="px-1 py-1">{transaction.description}</td>
               <td className="px-1 py-1">
                 {transaction.date.toDate().toLocaleString("en-US", {
                   month: "numeric",
@@ -168,6 +175,11 @@ function TransactionList({ transactions }) {
                   hour: "numeric",
                   minute: "numeric",
                 })}
+              </td>
+              <td>
+                {transaction.description === ""
+                  ? "N/A"
+                  : transaction.description}
               </td>
               <td>
                 <button
@@ -288,7 +300,7 @@ function AddTransaction() {
                 onChange={(e) => setAmount(e.target.value)}
               />
             </div>
-            <div  className="flex gap-5">
+            <div className="flex gap-5">
               <label htmlFor="description" className="font-semibold">
                 Description:
               </label>
@@ -302,8 +314,8 @@ function AddTransaction() {
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
-            <button type="submit" className="w-fit custom-button">
-              Add Transaction
+            <button type="submit" className="border-b w-fit custom-button">
+              Submit Transaction
             </button>
           </form>
         </div>

@@ -165,16 +165,16 @@ function BarGraph({ MonthlyEarning, MonthlySpending }) {
       {
         label: "Earning",
         data: MonthlyEarning,
-        backgroundColor: "rgba(75, 192, 192, 0.7)",
-        borderColor: "rgba(75, 192, 192, 1)",
-        borderWidth: 1,
+        backgroundColor: "rgba(0, 220, 0, 0.7)",
+        borderColor: "rgba(0, 220, 0, .8)",
+        borderWidth: 2,
       },
       {
         label: "Spending",
         data: MonthlySpending,
-        backgroundColor: "rgba(255, 99, 132, 0.7)",
-        borderColor: "rgba(255, 99, 132, 1)",
-        borderWidth: 1,
+        backgroundColor: "rgba(237, 0, 0, 0.7)",
+        borderColor: "rgba(237, 0, 0, .8)",
+        borderWidth: 2,
       },
     ],
   };

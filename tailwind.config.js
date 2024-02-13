@@ -12,7 +12,7 @@ export default {
       textColor: {
         DEFAULT: '#c6c6c6',
         spending: '#ed0000',
-        income: '#00e100',
+        income: '#00dc00',
       },
       fontSize: {
         DEFAULT: '1.75rem',
