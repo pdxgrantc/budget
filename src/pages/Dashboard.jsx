@@ -31,7 +31,10 @@ export default function Dashboard() {
         <h2 className="text-lheader font-semibold">{user.displayName}</h2>
       </div>
       <CurrentBalance />
-      <MonthlyEarning />
+      <div>
+        <MonthlyEarning />
+        <MonthlySpending />
+      </div>
     </>
   );
 }
@@ -127,6 +130,67 @@ function MonthlyEarning() {
   );
 }
 
+function MonthlySpending() {
+  const [user] = useAuthState(auth);
+  const [monthlySpending, setMonthlySpending] = useState(null);
+
+  useEffect(() => {
+    // subscribe to the users income collection and pull the last 30 days of earnings and put them into an array by day
+    const incomeRef = collection(db, "users", user.uid, "spending");
+    const q = query(
+      incomeRef,
+      orderBy("date", "desc"),
+      where(
+        "date",
+        ">",
+        new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+      )
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map((doc) => doc.data());
+
+      const sortedByDay = Array.from({ length: 30 }, (_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const formattedDate = `${date.getDate()}-${date.getMonth() + 1}`; // JavaScript months are 0-indexed
+
+        const docsForDate = docs.filter((doc) => {
+          const docDate = doc.date.toDate();
+          const docFormattedDate = `${docDate.getDate()}-${
+            docDate.getMonth() + 1
+          }`;
+          return docFormattedDate === formattedDate;
+        });
+
+        const totalAmountForDate = docsForDate.reduce(
+          (total, doc) => total + Number(doc.amount),
+          0
+        );
+
+        return totalAmountForDate || 0;
+      });
+
+      setMonthlySpending(sortedByDay);
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, [user]);
+
+  return (
+    <>
+      {monthlySpending !== null && (
+        <div className="flex gap-2 text-xl">
+          <h2>This month you have spent:</h2>
+          <LineGraph inputData={monthlySpending} inputLabel="Spending" />
+        </div>
+      )}
+    </>
+  );
+}
+
 Chart.register(...registerables);
 
 Chart.register(CategoryScale);
@@ -145,7 +209,6 @@ function LineGraph({
   const [borderColor, setBorderColor] = useState("rgba(75,192,192,1)");
 
   useEffect(() => {
-    console.log("data recieved", inputData);
     setInput(inputData);
   }, [inputData]);
 
@@ -237,7 +300,9 @@ function LineGraph({
   const labels = Array.from({ length: 30 }, (_, i) => {
     const date = new Date();
     date.setDate(date.getDate() - i);
-    return `${date.toLocaleString('default', { month: 'short' })} ${date.getDate()}`;
+    return `${date.toLocaleString("default", {
+      month: "short",
+    })} ${date.getDate()}`;
   });
 
   const data = {
