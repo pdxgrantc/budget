@@ -16,7 +16,7 @@ import {
 } from "firebase/firestore";
 
 // Chart.js
-import { Line, Bar } from "react-chartjs-2";
+import { Bar } from "react-chartjs-2";
 import { Chart, registerables, CategoryScale } from "chart.js";
 
 export default function Dashboard() {
