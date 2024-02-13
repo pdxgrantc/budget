@@ -124,8 +124,6 @@ function LatestTransactions() {
 }
 
 function TransactionList({ transactions }) {
-  const [user] = useAuthState(auth);
-
   return (
     <div className="overflow-x-auto">
       <table className="table-auto w-fit text-left whitespace-nowrap">
