@@ -30,7 +30,7 @@ export default function Income() {
       </Helmet>
       <div>
         <h1 className="text-title font-semibold">Income</h1>
-        <div className="grid grid-cols-2 gap-10">
+        <div className="grid on_desktop:grid-cols-2 on_mobile:grid-cols-1 gap-10">
           <AddTransaction />
           <div className="flex flex-col gap-2">
             <LatestTransactions />

@@ -6,6 +6,10 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        on_desktop: { "min": '1400px' },
+        on_mobile: { "max": '1399px' },
+      },
       backgroundColor: {
         DEFAULT: '#1a1a1a',
       },

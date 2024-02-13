@@ -32,7 +32,7 @@ export default function Dashboard() {
         <h2 className="text-subheader font-light">Welcome</h2>
         <h2 className="text-lheader font-semibold">{user.displayName}</h2>
       </div>
-      <div className="grid grid-cols-2 gap-10">
+      <div className="grid on_desktop:grid-cols-2 on_mobile:grid-cols-1 gap-10">
         <Graph />
         <div>
           <RecentTransactions />
