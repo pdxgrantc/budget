@@ -247,7 +247,7 @@ function MobileNavBar() {
         )}
       </nav>
       {menuOpen && (
-        <div className="absolute right-[5rem] bg-menuBG text rounded w-fit p-3">
+        <div className="absolute right-[3vw] bg-menuBG text rounded w-fit p-3">
         <DropdownMenu>
           <MenuItem onClick={closeMenu}>
             <Link to="/">Dashboard</Link>
