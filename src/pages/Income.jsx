@@ -21,6 +21,8 @@ import {
 
 // Icons
 import { MdOutlineDeleteOutline as DeleteIcon } from "react-icons/md";
+import { IoChevronForward as OpenIcon } from "react-icons/io5";
+import { IoChevronDown as ClosedIcon } from "react-icons/io5";
 
 export default function Income() {
   return (
@@ -123,7 +125,39 @@ function LatestTransactions() {
 
 function TransactionList({ transactions }) {
   const [user] = useAuthState(auth);
-  const handleDelete = async (id) => {
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="table-auto w-fit text-left whitespace-nowrap">
+        <thead>
+          <tr>
+            <th></th>
+            <th className="px-1 py-1">Date</th>
+            <th className="px-1 py-1">Amount</th>
+            <th className="px-1 py-1">Category</th>
+            <th className="px-1 py-1"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {transactions.map((transaction) => (
+            <TransactionRow key={transaction.id} transaction={transaction} />
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// add props validation
+TransactionList.propTypes = {
+  transactions: PropTypes.array.isRequired,
+};
+
+function TransactionRow({ transaction }) {
+  const [user] = useAuthState(auth);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleDelete = async (id, amount) => {
     const userConfrim = confirm(
       "Are you sure you want to delete this transaction?"
     );
@@ -139,8 +173,7 @@ function TransactionList({ transactions }) {
       const userRef = doc(db, "users", user.uid);
       const userDocSnap = await getDoc(userRef);
       const currentBalance = userDocSnap.data().currentBalance;
-      const newBalance =
-        currentBalance - transactions.find((t) => t.id === id).amount;
+      const newBalance = currentBalance - amount;
 
       try {
         await setDoc(userRef, { currentBalance: newBalance }, { merge: true });
@@ -151,55 +184,41 @@ function TransactionList({ transactions }) {
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table-auto w-fit text-left whitespace-nowrap">
-        <thead>
-          <tr>
-            <th className="px-1 py-1">Date</th>
-            <th className="px-1 py-1">Amount</th>
-            <th className="px-1 py-1">Category</th>
-            <th className="px-1 py-1">Description</th>
-            <th className="px-1 py-1"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {transactions.map((transaction) => (
-            <tr key={transaction.id}>
-            <td className="px-1 py-1">
-              {transaction.date.toDate().toLocaleString("en-US", {
-                month: "numeric",
-                day: "numeric",
-                year: "numeric",
-              })}
-            </td>
-              <td className="px-1 py-1">
-                ${Number(transaction.amount).toFixed(2)}
-              </td>
-              <td className="px-1 py-1">{transaction.category}</td>
-              <td>
-                {transaction.description === ""
-                  ? "N/A"
-                  : transaction.description}
-              </td>
-              <td>
-                <button
-                  className="custom-button"
-                  onClick={() => handleDelete(transaction.id)}
-                >
-                  <DeleteIcon />
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    <>
+      <tr>
+        <td>
+          <button onClick={() => setIsOpen((prev) => !prev)}>
+            {isOpen ? <ClosedIcon /> : <OpenIcon />}
+          </button>
+        </td>
+        <td>{transaction.date.toDate().toLocaleDateString()}</td>
+        <td>${transaction.amount}</td>
+        <td>{transaction.category}</td>
+        <td>
+          <button
+            className="custom-button"
+            onClick={() => handleDelete(transaction.id, transaction.amount)}
+          >
+            <DeleteIcon />
+          </button>
+        </td>
+      </tr>
+      {isOpen && (
+        <tr>
+          <td colSpan="1"></td>
+          <td colSpan="4">
+            {transaction.descrition === ""
+              ? "Description: N/A"
+              : transaction.description}
+          </td>
+        </tr>
+      )}
+    </>
   );
 }
 
-// add props validation
-TransactionList.propTypes = {
-  transactions: PropTypes.array.isRequired,
+TransactionRow.propTypes = {
+  transaction: PropTypes.object,
 };
 
 function AddTransaction() {

@@ -231,7 +231,7 @@ function MobileNavBar() {
 
   return (
     <>
-      <nav className="h-20 bg-black px-[3vw] flex flex-wrap items-center justify-between relative">
+      <nav className="on_mobile:text-mobile h-20 bg-black px-[3vw] flex flex-wrap items-center justify-between relative">
         <h1 className="text-lheader font-semibold">EB</h1>
         {user ? (
           <button

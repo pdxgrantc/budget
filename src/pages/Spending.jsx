@@ -21,6 +21,8 @@ import {
 
 // Icons
 import { MdOutlineDeleteOutline as DeleteIcon } from "react-icons/md";
+import { IoChevronForward as OpenIcon } from "react-icons/io5";
+import { IoChevronDown as ClosedIcon } from "react-icons/io5";
 
 export default function Spending() {
   return (

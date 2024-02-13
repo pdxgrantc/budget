@@ -24,6 +24,7 @@ export default {
       },
       fontSize: {
         DEFAULT: '1.5rem',
+        mobile: '1.25rem',
         title: '5rem',
         xxlheader: '4.25rem',
         xlheader: '3.75rem',

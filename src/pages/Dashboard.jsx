@@ -171,19 +171,21 @@ function BarGraph({ MonthlyEarning, MonthlySpending }) {
         data: MonthlyEarning,
         backgroundColor: "rgba(0, 220, 0, 0.7)",
         borderColor: "rgba(0, 220, 0, .8)",
-        borderWidth: 2,
+        borderWidth: 0,
       },
       {
         label: "Spending",
         data: MonthlySpending,
         backgroundColor: "rgba(237, 0, 0, 0.7)",
         borderColor: "rgba(237, 0, 0, .8)",
-        borderWidth: 2,
+        borderWidth: 0,
       },
     ],
   };
 
   const options = {
+    responsive: true,
+    maintainAspectRatio: false,
     title: {
       display: false,
       text: "Earnings",
@@ -255,7 +257,7 @@ function BarGraph({ MonthlyEarning, MonthlySpending }) {
   };
 
   return (
-    <div className="w-full h-auto">
+    <div className="w-full h-full on_desktop:min-h-[25rem] on_mobile:min-h-[20rem]">
       <Bar data={data} options={options} />
     </div>
   );
