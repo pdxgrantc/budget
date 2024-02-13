@@ -231,14 +231,15 @@ function BarGraph({ MonthlyEarning, MonthlySpending }) {
     plugins: {
       title: {
         display: true,
-        text: "Recent Earnings and Spending",
+        text: "Daily Balance",
         font: {
           size: 25,
         },
         color: "#d6d6d6", // Change the title text color here
       },
       legend: {
-        display: false,
+        display: true,
+        position: "bottom",
         labels: {
           color: "#d6d6d6", // Change the label text color here
           font: {

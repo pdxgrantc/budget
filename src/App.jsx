@@ -68,18 +68,17 @@ function Root(props) {
             {!user ? (
               <button onClick={SignIn}>Sign In</button>
             ) : (
-              <button onClick={SignOut}>Sign Out</button>
+              <button className="flex gap-4" onClick={SignOut}>
+                <p>Sign Out</p>
+                <img
+                  src={user?.photoURL}
+                  alt="User"
+                  className="h-10 w-10 rounded-full my-auto"
+                />
+              </button>
             )}
           </li>
-          {user && (
-            <li>
-              <img
-                src={user?.photoURL}
-                alt="User"
-                className="h-8 w-8 rounded-full my-auto"
-              />
-            </li>
-          )}
+          {user && <li></li>}
         </ul>
       </nav>
 
