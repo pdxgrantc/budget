@@ -178,9 +178,11 @@ function DesktopNavBar() {
 
   return (
     <nav className="h-20 bg-black px-20 flex flex-wrap items-center justify-between">
-      <h1 className="text-lheader font-semibold on_mobile:hidden">
-        Easy Budget
-      </h1>
+      <Link to="/">
+        <h1 className="text-lheader font-semibold on_mobile:hidden">
+          Easy Budget
+        </h1>
+      </Link>
       <ul
         className="flex gap-5 text-subheader font-semibold mb-2"
         style={{ alignSelf: "flex-end" }}
@@ -238,7 +240,11 @@ function MobileNavBar() {
             className="h-full"
             onClick={() => setMenuOpen((prev) => !prev)}
           >
-            <MenuIcon className={`hover:text-white h-4/5 w-auto ${menuOpen ? 'text-white' : ''}`} />
+            <MenuIcon
+              className={`hover:text-white h-4/5 w-auto ${
+                menuOpen ? "text-white" : ""
+              }`}
+            />
           </button>
         ) : (
           <button className="h-full" onClick={SignIn}>
@@ -248,21 +254,21 @@ function MobileNavBar() {
       </nav>
       {menuOpen && (
         <div className="absolute right-[3vw] bg-menuBG text rounded w-fit p-3">
-        <DropdownMenu>
-          <MenuItem onClick={closeMenu}>
-            <Link to="/">Dashboard</Link>
-          </MenuItem>
-          <MenuItem onClick={closeMenu}>
-            <Link to="/income">Income</Link>
-          </MenuItem>
-          <MenuItem onClick={closeMenu}>
-            <Link to="/spending">Spending</Link>
-          </MenuItem>
-          <MenuItem>
-            <button onClick={handleSignOut}>Sign Out</button>
-          </MenuItem>
-        </DropdownMenu>
-      </div>
+          <DropdownMenu>
+            <MenuItem onClick={closeMenu}>
+              <Link to="/">Dashboard</Link>
+            </MenuItem>
+            <MenuItem onClick={closeMenu}>
+              <Link to="/income">Income</Link>
+            </MenuItem>
+            <MenuItem onClick={closeMenu}>
+              <Link to="/spending">Spending</Link>
+            </MenuItem>
+            <MenuItem>
+              <button onClick={handleSignOut}>Sign Out</button>
+            </MenuItem>
+          </DropdownMenu>
+        </div>
       )}
     </>
   );
@@ -278,7 +284,14 @@ DropdownMenu.propTypes = {
 };
 
 function MenuItem({ children, onClick }) {
-  return <div className="mx-2 px-1 text-white border-b-2 border-transparent hover:border-white" onClick={onClick}>{children}</div>;
+  return (
+    <div
+      className="mx-2 px-1 text-white border-b-2 border-transparent hover:border-white"
+      onClick={onClick}
+    >
+      {children}
+    </div>
+  );
 }
 
 // validate prop types

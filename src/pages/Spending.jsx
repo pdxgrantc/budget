@@ -220,7 +220,7 @@ function AddTransaction() {
       {budgetCategories !== null && (
         <div className="w-fit">
           <h2 className="text-lheader font-light">Add Transaction</h2>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-fit">
             <div className="flex gap-5">
               <label htmlFor="category" className="font-semibold">
                 Category:
@@ -245,7 +245,7 @@ function AddTransaction() {
                 Amount:
               </label>
               <input
-                className="rounded w-fit"
+                className="rounded on_mobile:w-full"
                 type="number"
                 id="amount"
                 name="amount"
@@ -256,11 +256,11 @@ function AddTransaction() {
               />
             </div>
             <div className="flex gap-5">
-              <label htmlFor="description" className="font-semibold">
+              <label htmlFor="description" className="font-semibold on_mobile:hidden">
                 Description:
               </label>
               <input
-                className="rounded w-fit"
+                className="rounded w-full"
                 type="text"
                 id="description"
                 name="description"
