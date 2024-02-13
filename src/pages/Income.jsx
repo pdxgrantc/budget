@@ -226,6 +226,7 @@ function AddTransaction() {
   const [amount, setAmount] = useState(0);
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
+  const [date, setDate] = useState(new Date());
 
   // pull the user's budget categories from firestore
   useEffect(() => {
@@ -262,7 +263,9 @@ function AddTransaction() {
       amount: amount,
       category: category,
       description: description,
-      date: new Date(),
+      // save the date in firebase format
+      date: new Date(date.toISOString().split("T")[0]),
+      dateAdded: new Date(),
     };
 
     try {
@@ -330,7 +333,10 @@ function AddTransaction() {
               />
             </div>
             <div className="flex gap-5">
-              <label htmlFor="description" className="font-semibold on_mobile:hidden">
+              <label
+                htmlFor="description"
+                className="font-semibold on_mobile:hidden"
+              >
                 Description:
               </label>
               <input
@@ -341,6 +347,19 @@ function AddTransaction() {
                 placeholder="Enter Description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-5">
+              <label htmlFor="date" className="font-semibold">
+                Date:
+              </label>
+              <input
+                className="rounded"
+                type="date"
+                id="date"
+                name="date"
+                value={date.toISOString().split("T")[0]}
+                onChange={(e) => setDate(new Date(e.target.value))}
               />
             </div>
             <button type="submit" className="border-b-2 w-fit custom-button">
