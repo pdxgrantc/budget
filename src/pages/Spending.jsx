@@ -157,6 +157,7 @@ function TransactionList({ transactions }) {
       <table className="table-auto w-fit text-left whitespace-nowrap">
         <thead>
           <tr>
+            <th></th>
             <th className="px-1 py-1">Date</th>
             <th className="px-1 py-1">Amount</th>
             <th className="px-1 py-1">Category</th>
@@ -165,6 +166,8 @@ function TransactionList({ transactions }) {
         </thead>
         <tbody>
           {transactions.map((transaction) => (
+            <TransactionRow key={transaction.id} transaction={transaction} />
+            /*
             <tr key={transaction.id}>
               <td className="px-1 py-1">
                 {transaction.date.toDate().toLocaleString("en-US", {
@@ -191,6 +194,7 @@ function TransactionList({ transactions }) {
                 </button>
               </td>
             </tr>
+            */
           ))}
         </tbody>
       </table>
@@ -251,7 +255,7 @@ function AddTransaction() {
     const userRef = doc(db, "users", user.uid);
     const userDocSnap = await getDoc(userRef);
     const currentBalance = userDocSnap.data().currentBalance;
-    const newBalance = currentBalance + Number(amount);
+    const newBalance = currentBalance - Number(amount);
 
     try {
       await setDoc(userRef, { currentBalance: newBalance }, { merge: true });
@@ -323,3 +327,71 @@ function AddTransaction() {
     </>
   );
 }
+
+function TransactionRow({ transaction }) {
+  const [user] = useAuthState(auth);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleDelete = async (id, amount) => {
+    const userConfrim = confirm(
+      "Are you sure you want to delete this transaction?"
+    );
+
+    if (userConfrim) {
+      try {
+        await deleteDoc(doc(db, "users", user.uid, "spending", id));
+      } catch (e) {
+        alert("Error deleting spending transaction please try again.");
+      }
+
+      // pull the user docuemnt from firestore and update the current balance
+      const userRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userRef);
+      const currentBalance = userDocSnap.data().currentBalance;
+      const newBalance = currentBalance + Number(amount);
+
+      try {
+        await setDoc(userRef, { currentBalance: newBalance }, { merge: true });
+      } catch (e) {
+        alert("Error updating current balance please try again.");
+      }
+    }
+  };
+
+  return (
+    <>
+      <tr>
+        <td>
+          <button onClick={() => setIsOpen((prev) => !prev)}>
+            {isOpen ? <ClosedIcon /> : <OpenIcon />}
+          </button>
+        </td>
+        <td>{transaction.date.toDate().toLocaleDateString()}</td>
+        <td>${transaction.amount}</td>
+        <td>{transaction.category}</td>
+        <td>
+          <button
+            className="custom-button"
+            onClick={() => handleDelete(transaction.id, transaction.amount)}
+          >
+            <DeleteIcon />
+          </button>
+        </td>
+      </tr>
+      {isOpen && (
+        <tr>
+          <td colSpan="1"></td>
+          <td colSpan="4">
+            {transaction.descrition === ""
+              ? "Description: N/A"
+              : transaction.description}
+          </td>
+        </tr>
+      )}
+    </>
+  );
+}
+
+TransactionRow.propTypes = {
+  transaction: PropTypes.object,
+};

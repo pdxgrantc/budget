@@ -171,7 +171,7 @@ function TransactionRow({ transaction }) {
       const userRef = doc(db, "users", user.uid);
       const userDocSnap = await getDoc(userRef);
       const currentBalance = userDocSnap.data().currentBalance;
-      const newBalance = currentBalance - amount;
+      const newBalance = currentBalance - Number(amount);
 
       try {
         await setDoc(userRef, { currentBalance: newBalance }, { merge: true });
