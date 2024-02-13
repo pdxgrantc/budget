@@ -222,26 +222,47 @@ function MobileNavBar() {
   const [user] = useAuthState(auth);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const handleSignOut = () => {
+    setMenuOpen(false);
+    SignOut();
+  };
+
+  const closeMenu = () => setMenuOpen(false);
+
   return (
     <>
-      <nav className="h-20 bg-black px-20 flex flex-wrap items-center justify-between">
+      <nav className="h-20 bg-black px-20 flex flex-wrap items-center justify-between relative">
         <h1 className="text-lheader font-semibold">EB</h1>
-        <button className="h-full" onClick={() => setMenuOpen((prev) => !prev)}>
-          <MenuIcon className="h-4/5 w-auto" />
-        </button>
+        {user ? (
+          <button
+            className="h-full"
+            onClick={() => setMenuOpen((prev) => !prev)}
+          >
+            <MenuIcon className={`hover:text-white h-4/5 w-auto ${menuOpen ? 'text-white' : ''}`} />
+          </button>
+        ) : (
+          <button className="h-full" onClick={SignIn}>
+            <p>Sign In</p>
+          </button>
+        )}
       </nav>
       {menuOpen && (
+        <div className="absolute right-[5rem] bg-black text rounded w-fit">
         <DropdownMenu>
-          <MenuItem>
+          <MenuItem onClick={closeMenu}>
             <Link to="/">Dashboard</Link>
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={closeMenu}>
             <Link to="/income">Income</Link>
           </MenuItem>
-          <MenuItem>
+          <MenuItem onClick={closeMenu}>
             <Link to="/spending">Spending</Link>
           </MenuItem>
+          <MenuItem>
+            <button onClick={handleSignOut}>Sign Out</button>
+          </MenuItem>
         </DropdownMenu>
+      </div>
       )}
     </>
   );
@@ -256,12 +277,12 @@ DropdownMenu.propTypes = {
   children: PropTypes.node,
 };
 
-function MenuItem({ children }) {
-  return <div>{children}</div>;
+function MenuItem({ children, onClick }) {
+  return <div onClick={onClick}>{children}</div>;
 }
 
 // validate prop types
 MenuItem.propTypes = {
   children: PropTypes.node,
+  onClick: PropTypes.func,
 };
-

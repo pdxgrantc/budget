@@ -258,8 +258,8 @@ function BarGraph({ MonthlyEarning, MonthlySpending }) {
 }
 
 BarGraph.propTypes = {
-  MonthlyEarning: PropTypes.array.isRequired,
-  MonthlySpending: PropTypes.array.isRequired,
+  MonthlyEarning: PropTypes.array,
+  MonthlySpending: PropTypes.array,
 };
 
 function CurrentBalance() {
@@ -312,8 +312,6 @@ function RecentTransactions() {
       incomeSnapshot.forEach((transaction) => (transaction.type = "income"));
 
       const allTransactions = spendingSnapshot.concat(incomeSnapshot);
-
-      console.log(allTransactions);
 
       const sortedTransactions = allTransactions.sort(
         (a, b) => b.date.toDate() - a.date.toDate()
