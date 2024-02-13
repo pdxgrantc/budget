@@ -16,7 +16,7 @@ import {
 } from "firebase/firestore";
 
 // Chart.js
-import { Line } from "react-chartjs-2";
+import { Line, Bar } from "react-chartjs-2";
 import { Chart, registerables, CategoryScale } from "chart.js";
 
 export default function Dashboard() {
@@ -32,46 +32,16 @@ export default function Dashboard() {
       </div>
       <CurrentBalance />
       <div>
-        <MonthlyEarning />
-        <MonthlySpending />
+        <Graph />
       </div>
     </>
   );
 }
 
-function CurrentBalance() {
+function Graph() {
   const [user] = useAuthState(auth);
-  const [currentBalance, setCurrentBalance] = useState(null);
-
-  // pull user's current balance from firestore within the user document
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const userRef = doc(db, "users", user.uid);
-      const userDocSnap = await getDoc(userRef);
-
-      if (userDocSnap.exists()) {
-        setCurrentBalance(userDocSnap.data().currentBalance);
-      }
-    };
-
-    fetchUserData();
-  }, [user]);
-
-  return (
-    <>
-      {currentBalance !== null && (
-        <div className="flex gap-2 text-xl">
-          <h2>Your Current Balance:</h2>
-          <h2>${currentBalance.toFixed(2)}</h2>
-        </div>
-      )}
-    </>
-  );
-}
-
-function MonthlyEarning() {
-  const [user] = useAuthState(auth);
-  const [monthlyEarnings, setMonthlyEarnings] = useState(null);
+  const [monthlyEarning, setMonthlyEarning] = useState(null);
+  const [monthlySpending, setMonthlySpending] = useState(null);
 
   useEffect(() => {
     // subscribe to the users income collection and pull the last 30 days of earnings and put them into an array by day
@@ -110,29 +80,13 @@ function MonthlyEarning() {
         return totalAmountForDate || 0;
       });
 
-      setMonthlyEarnings(sortedByDay);
+      setMonthlyEarning(sortedByDay);
     });
 
     return () => {
       unsubscribe();
     };
   }, [user]);
-
-  return (
-    <>
-      {monthlyEarnings !== null && (
-        <div className="flex gap-2 text-xl">
-          <h2>This month you have earned:</h2>
-          <LineGraph inputData={monthlyEarnings} inputLabel="Earnings" />
-        </div>
-      )}
-    </>
-  );
-}
-
-function MonthlySpending() {
-  const [user] = useAuthState(auth);
-  const [monthlySpending, setMonthlySpending] = useState(null);
 
   useEffect(() => {
     // subscribe to the users income collection and pull the last 30 days of earnings and put them into an array by day
@@ -180,11 +134,37 @@ function MonthlySpending() {
   }, [user]);
 
   return (
+    <BarGraph
+      MonthlyEarning={monthlyEarning}
+      MonthlySpending={monthlySpending}
+    />
+  );
+}
+
+function CurrentBalance() {
+  const [user] = useAuthState(auth);
+  const [currentBalance, setCurrentBalance] = useState(null);
+
+  // pull user's current balance from firestore within the user document
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userRef);
+
+      if (userDocSnap.exists()) {
+        setCurrentBalance(userDocSnap.data().currentBalance);
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
+
+  return (
     <>
-      {monthlySpending !== null && (
+      {currentBalance !== null && (
         <div className="flex gap-2 text-xl">
-          <h2>This month you have spent:</h2>
-          <LineGraph inputData={monthlySpending} inputLabel="Spending" />
+          <h2>Your Current Balance:</h2>
+          <h2>${currentBalance.toFixed(2)}</h2>
         </div>
       )}
     </>
@@ -195,46 +175,34 @@ Chart.register(...registerables);
 
 Chart.register(CategoryScale);
 
-function LineGraph({
-  inputData,
-  inputLabel,
-  inputBackgroundColor,
-  inputBorderColor,
-}) {
-  const [input, setInput] = useState([]);
-  const [label, setLabel] = useState("");
-  const [backgroundColor, setBackgroundColor] = useState(
-    "rgba(75,192,192,0.5)"
-  );
-  const [borderColor, setBorderColor] = useState("rgba(75,192,192,1)");
+function BarGraph({ MonthlyEarning, MonthlySpending }) {
+  const labels = Array.from({ length: 30 }, (_, i) => {
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+    return `${date.toLocaleString("default", {
+      month: "short",
+    })} ${date.getDate()}`;
+  });
 
-  useEffect(() => {
-    setInput(inputData);
-  }, [inputData]);
-
-  useEffect(() => {
-    if (inputLabel) {
-      setLabel(inputLabel);
-    } else {
-      setLabel("");
-    }
-  }, [inputLabel]);
-
-  useEffect(() => {
-    if (inputBackgroundColor) {
-      setBackgroundColor(inputBackgroundColor);
-    } else {
-      setBackgroundColor("rgba(75,192,192,0.5)");
-    }
-  }, [inputBackgroundColor]);
-
-  useEffect(() => {
-    if (inputBorderColor) {
-      setBorderColor(inputBorderColor);
-    } else {
-      setBorderColor("rgba(75,192,192,1)");
-    }
-  }, [inputBorderColor]);
+  const data = {
+    labels: labels,
+    datasets: [
+      {
+        label: "Earning",
+        data: MonthlyEarning,
+        backgroundColor: "rgba(75, 192, 192, 0.7)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
+      },
+      {
+        label: "Spending",
+        data: MonthlySpending,
+        backgroundColor: "rgba(255, 99, 132, 0.7)",
+        borderColor: "rgba(255, 99, 132, 1)",
+        borderWidth: 1,
+      },
+    ],
+  };
 
   const options = {
     title: {
@@ -265,6 +233,7 @@ function LineGraph({
         },
       },
       y: {
+        beginAtZero: true,
         title: {
           display: true,
           text: "Amount",
@@ -285,6 +254,14 @@ function LineGraph({
       },
     },
     plugins: {
+      title: {
+        display: true,
+        text: "Recent Earnings and Spending",
+        font: {
+          size: 25,
+        },
+        color: "#d6d6d6", // Change the title text color here
+      },
       legend: {
         display: false,
         labels: {
@@ -297,37 +274,14 @@ function LineGraph({
     },
   };
 
-  const labels = Array.from({ length: 30 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - i);
-    return `${date.toLocaleString("default", {
-      month: "short",
-    })} ${date.getDate()}`;
-  });
-
-  const data = {
-    labels: labels,
-    datasets: [
-      {
-        label: label,
-        data: input,
-        fill: true,
-        backgroundColor: backgroundColor,
-        borderColor: borderColor,
-      },
-    ],
-  };
-
   return (
     <div className="w-full h-auto">
-      <Line data={data} options={options} />
+      <Bar data={data} options={options} />
     </div>
   );
 }
 
-LineGraph.propTypes = {
-  inputData: PropTypes.array.isRequired,
-  inputLabel: PropTypes.string,
-  inputBackgroundColor: PropTypes.string,
-  inputBorderColor: PropTypes.string,
+BarGraph.propTypes = {
+  MonthlyEarning: PropTypes.array.isRequired,
+  MonthlySpending: PropTypes.array.isRequired,
 };
