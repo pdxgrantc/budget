@@ -249,6 +249,13 @@ function AddTransaction() {
       return;
     }
 
+    const isNumeric = /^[0-9]+$/.test(amount);
+
+    if (!isNumeric) {
+      alert("Input contains non-numerical characters!");
+      return;
+    }
+
     const incomeRef = collection(db, "users", user.uid, "income");
 
     const newIncomeDoc = {
