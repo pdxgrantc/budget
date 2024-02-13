@@ -13,6 +13,8 @@ import {
   where,
   orderBy,
   query,
+  limit,
+  getDocs,
 } from "firebase/firestore";
 
 // Chart.js
@@ -30,9 +32,12 @@ export default function Dashboard() {
         <h2 className="text-subheader font-light">Welcome</h2>
         <h2 className="text-lheader font-semibold">{user.displayName}</h2>
       </div>
-      <CurrentBalance />
-      <div>
+      <div className="grid grid-cols-2">
         <Graph />
+        <div>
+          <RecentTransactions />
+          <CurrentBalance />
+        </div>
       </div>
     </>
   );
@@ -138,36 +143,6 @@ function Graph() {
       MonthlyEarning={monthlyEarning}
       MonthlySpending={monthlySpending}
     />
-  );
-}
-
-function CurrentBalance() {
-  const [user] = useAuthState(auth);
-  const [currentBalance, setCurrentBalance] = useState(null);
-
-  // pull user's current balance from firestore within the user document
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const userRef = doc(db, "users", user.uid);
-      const userDocSnap = await getDoc(userRef);
-
-      if (userDocSnap.exists()) {
-        setCurrentBalance(userDocSnap.data().currentBalance);
-      }
-    };
-
-    fetchUserData();
-  }, [user]);
-
-  return (
-    <>
-      {currentBalance !== null && (
-        <div className="flex gap-2 text-xl">
-          <h2>Your Current Balance:</h2>
-          <h2>${currentBalance.toFixed(2)}</h2>
-        </div>
-      )}
-    </>
   );
 }
 
@@ -285,3 +260,104 @@ BarGraph.propTypes = {
   MonthlyEarning: PropTypes.array.isRequired,
   MonthlySpending: PropTypes.array.isRequired,
 };
+
+function CurrentBalance() {
+  const [user] = useAuthState(auth);
+  const [currentBalance, setCurrentBalance] = useState(null);
+
+  // pull user's current balance from firestore within the user document
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userRef = doc(db, "users", user.uid);
+      const userDocSnap = await getDoc(userRef);
+
+      if (userDocSnap.exists()) {
+        setCurrentBalance(userDocSnap.data().currentBalance);
+      }
+    };
+
+    fetchUserData();
+  }, [user]);
+
+  return (
+    <>
+      {currentBalance !== null && (
+        <div className="flex gap-2 text-xl">
+          <h2>Your Current Balance:</h2>
+          <h2>${currentBalance.toFixed(2)}</h2>
+        </div>
+      )}
+    </>
+  );
+}
+
+function RecentTransactions() {
+  const [user] = useAuthState(auth);
+  const [recentTransactions, setRecentTransactions] = useState(null);
+
+  // pull the user's recent transactions from firestore
+  useEffect(() => {
+    const fetchRecentTransactions = async () => {
+      const spendingRef = collection(db, "users", user.uid, "spending");
+      const incomeRef = collection(db, "users", user.uid, "income");
+
+      const spendingSnapshot = await getRecentTransactions(spendingRef);
+      const incomeSnapshot = await getRecentTransactions(incomeRef);
+
+      // adda a type property to each transaction to differentiate between spending and income
+      spendingSnapshot.forEach((transaction) => (transaction.type = "spending"));
+      incomeSnapshot.forEach((transaction) => (transaction.type = "income"));
+
+      const allTransactions = spendingSnapshot.concat(incomeSnapshot);
+
+      console.log(allTransactions);
+
+      const sortedTransactions = allTransactions.sort(
+        (a, b) => b.date.toDate() - a.date.toDate()
+      );
+
+      // limit the transactions to the 5 most recent
+      sortedTransactions.length = 5;
+
+      setRecentTransactions(sortedTransactions);
+    };
+
+    fetchRecentTransactions();
+  }, [user]);
+
+  const getRecentTransactions = async (ref) => {
+    const q = query(ref, orderBy("date", "desc"), limit(5));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((doc) => doc.data());
+  };
+
+  return (
+    <>
+      <h2 className="text-lheader font-light">Recent Transactions</h2>
+      {recentTransactions !== null && (
+        <div className="w-full">
+          <table className="w-full">
+            <thead>
+              <tr>
+                <th className="text-left">Date</th>
+                <th className="text-left">Category</th>
+                <th className="text-left">Description</th>
+                <th className="text-left">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recentTransactions.map((transaction, index) => (
+                <tr key={index}>
+                  <td>{transaction.date.toDate().toLocaleDateString()}</td>
+                  <td>{transaction.category}</td>
+                  <td>{transaction.description}</td>
+                  <td>${transaction.amount}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </>
+  );
+}
