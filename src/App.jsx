@@ -234,7 +234,9 @@ function MobileNavBar() {
   return (
     <>
       <nav className="on_mobile:text-mobile h-20 bg-black px-[3vw] flex flex-wrap items-center justify-between relative">
-        <h1 className="text-lheader font-semibold">EB</h1>
+        <Link to="/">
+          <h1 className="text-lheader font-semibold">EB</h1>
+        </Link>
         {user ? (
           <button
             className="h-full"
