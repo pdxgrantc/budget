@@ -367,22 +367,24 @@ function TransactionRow({ transaction }) {
 
   return (
     <>
-    <tr>
-      <td>
-        <button onClick={() => setIsOpen((prev) => !prev)}>
-          {isOpen ? <ClosedIcon /> : <OpenIcon />}
-        </button>
-      </td>
-      <td>{transaction.date.toDate().toLocaleDateString()}</td>
-      <td>${transaction.amount}</td>
-      <td>{transaction.category}</td>
-    </tr>
-    {isOpen && (
       <tr>
-        <td colSpan="1"></td>
-        <td colSpan="4">{transaction.description}</td>
+        <td>
+          <button onClick={() => setIsOpen((prev) => !prev)}>
+            {isOpen ? <ClosedIcon /> : <OpenIcon />}
+          </button>
+        </td>
+        <td>{transaction.date.toDate().toLocaleDateString()}</td>
+        <td>${transaction.amount}</td>
+        <td>{transaction.category}</td>
       </tr>
-    )}
+      {isOpen && (
+        <tr>
+          <td colSpan="1"></td>
+          <td colSpan="4">
+            {transaction.descrition === "" ? "Description: N/A" : transaction.description}
+          </td>
+        </tr>
+      )}
     </>
   );
 }

@@ -158,7 +158,6 @@ function TransactionList({ transactions }) {
             <th className="px-1 py-1">Date</th>
             <th className="px-1 py-1">Amount</th>
             <th className="px-1 py-1">Category</th>
-            <th className="px-1 py-1">Description</th>
             <th className="px-1 py-1"></th>
           </tr>
         </thead>
