@@ -11,6 +11,8 @@ export default {
       },
       textColor: {
         DEFAULT: '#c6c6c6',
+        spending: '#ff0000',
+        income: '#00ff00',
       },
       fontSize: {
         DEFAULT: '1.75rem',

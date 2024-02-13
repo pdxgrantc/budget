@@ -32,7 +32,7 @@ export default function Dashboard() {
         <h2 className="text-subheader font-light">Welcome</h2>
         <h2 className="text-lheader font-semibold">{user.displayName}</h2>
       </div>
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-2 gap-10">
         <Graph />
         <div>
           <RecentTransactions />
@@ -305,7 +305,9 @@ function RecentTransactions() {
       const incomeSnapshot = await getRecentTransactions(incomeRef);
 
       // adda a type property to each transaction to differentiate between spending and income
-      spendingSnapshot.forEach((transaction) => (transaction.type = "spending"));
+      spendingSnapshot.forEach(
+        (transaction) => (transaction.type = "spending")
+      );
       incomeSnapshot.forEach((transaction) => (transaction.type = "income"));
 
       const allTransactions = spendingSnapshot.concat(incomeSnapshot);
@@ -350,8 +352,16 @@ function RecentTransactions() {
                 <tr key={index}>
                   <td>{transaction.date.toDate().toLocaleDateString()}</td>
                   <td>{transaction.category}</td>
-                  <td>{transaction.description}</td>
-                  <td>${transaction.amount}</td>
+                  <td>{transaction.description === "" ? ("N/A") : (transaction.description)}</td>
+                  <td
+                    className={
+                      transaction.type === "spending"
+                        ? "text-spending"
+                        : "text-income"
+                    }
+                  >
+                    ${transaction.amount}
+                  </td>
                 </tr>
               ))}
             </tbody>
