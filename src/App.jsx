@@ -45,8 +45,7 @@ function Root(props) {
 
   return (
     <div className="text min-h-screen w-full">
-      <NavBar />
-
+      <NavBarHost />
       <div>
         {user ? (
           <div
@@ -158,7 +157,20 @@ OutsideLink.propTypes = {
   link: PropTypes.string,
 };
 
-function NavBar() {
+function NavBarHost() {
+  return (
+    <div>
+      <div className="on_desktop:hidden">
+        <MobileNavBar />
+      </div>
+      <div className="on_mobile:hidden">
+        <DesktopNavBar />
+      </div>
+    </div>
+  );
+}
+
+function DesktopNavBar() {
   const [user] = useAuthState(auth);
 
   return (
@@ -202,4 +214,8 @@ function NavBar() {
       </ul>
     </nav>
   );
+}
+
+function MobileNavBar() {
+  return <></>;
 }
