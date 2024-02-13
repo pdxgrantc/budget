@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   BrowserRouter,
   Route,
@@ -15,6 +16,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { SiGithub as GitHubLogo } from "react-icons/si";
 import { FaLinkedinIn as LinkedLogo } from "react-icons/fa";
 import { IoPersonCircleSharp as AboutLogo } from "react-icons/io5";
+import { IoMenu as MenuIcon } from "react-icons/io5";
 
 // Images
 import google_normal from "./assets/btn_google_signin_dark_normal_web@2x.png";
@@ -178,7 +180,6 @@ function DesktopNavBar() {
       <h1 className="text-lheader font-semibold on_mobile:hidden">
         Easy Budget
       </h1>
-      <h1 className="text-lheader font-semibold on_desktop:hidden">EB</h1>
       <ul
         className="flex gap-5 text-subheader font-semibold mb-2"
         style={{ alignSelf: "flex-end" }}
@@ -217,5 +218,15 @@ function DesktopNavBar() {
 }
 
 function MobileNavBar() {
-  return <></>;
+  const [user] = useAuthState(auth);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <nav className="h-20 bg-black px-20 flex flex-wrap items-center justify-between">
+      <h1 className="text-lheader font-semibold">EB</h1>
+      <button className="h-full" onClick={() => setMenuOpen((prev) => !prev)}>
+        <MenuIcon className="h-4/5 w-auto" />
+      </button>
+    </nav>
+  );
 }
