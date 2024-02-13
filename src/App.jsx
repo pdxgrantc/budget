@@ -4,6 +4,7 @@ import {
   Route,
   Routes,
   Outlet,
+  Link,
   NavLink,
 } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -222,11 +223,45 @@ function MobileNavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav className="h-20 bg-black px-20 flex flex-wrap items-center justify-between">
-      <h1 className="text-lheader font-semibold">EB</h1>
-      <button className="h-full" onClick={() => setMenuOpen((prev) => !prev)}>
-        <MenuIcon className="h-4/5 w-auto" />
-      </button>
-    </nav>
+    <>
+      <nav className="h-20 bg-black px-20 flex flex-wrap items-center justify-between">
+        <h1 className="text-lheader font-semibold">EB</h1>
+        <button className="h-full" onClick={() => setMenuOpen((prev) => !prev)}>
+          <MenuIcon className="h-4/5 w-auto" />
+        </button>
+      </nav>
+      {menuOpen && (
+        <DropdownMenu>
+          <MenuItem>
+            <Link to="/">Dashboard</Link>
+          </MenuItem>
+          <MenuItem>
+            <Link to="/income">Income</Link>
+          </MenuItem>
+          <MenuItem>
+            <Link to="/spending">Spending</Link>
+          </MenuItem>
+        </DropdownMenu>
+      )}
+    </>
   );
 }
+
+function DropdownMenu({ children }) {
+  return <div>{children}</div>;
+}
+
+// validate prop types
+DropdownMenu.propTypes = {
+  children: PropTypes.node,
+};
+
+function MenuItem({ children }) {
+  return <div>{children}</div>;
+}
+
+// validate prop types
+MenuItem.propTypes = {
+  children: PropTypes.node,
+};
+
