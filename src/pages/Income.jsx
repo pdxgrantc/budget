@@ -189,7 +189,13 @@ function TransactionRow({ transaction }) {
             {isOpen ? <ClosedIcon /> : <OpenIcon />}
           </button>
         </td>
-        <td>{transaction.date.toDate().toLocaleDateString()}</td>
+        <td>
+          {new Date(
+            transaction.date.split("-")[0],
+            transaction.date.split("-")[1] - 1, // JavaScript months are 0-indexed
+            transaction.date.split("-")[2]
+          ).toLocaleDateString()}
+        </td>
         <td>${transaction.amount}</td>
         <td>{transaction.category}</td>
         <td>
@@ -264,7 +270,7 @@ function AddTransaction() {
       category: category,
       description: description,
       // save the date in firebase format
-      date: new Date(date.toISOString().split("T")[0]),
+      date: date,
       dateAdded: new Date(),
     };
 
@@ -358,8 +364,8 @@ function AddTransaction() {
                 type="date"
                 id="date"
                 name="date"
-                value={date.toISOString().split("T")[0]}
-                onChange={(e) => setDate(new Date(e.target.value))}
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
               />
             </div>
             <button type="submit" className="border-b-2 w-fit custom-button">
