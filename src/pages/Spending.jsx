@@ -187,9 +187,8 @@ function AddTransaction() {
       amount: amount,
       category: category,
       description: description,
-      // save the date in firebase format 
-      date: new Date(date.toISOString().split("T")[0]),
-      
+      date: date,
+      dateCreated: new Date(),
     };
 
     try {
