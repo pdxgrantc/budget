@@ -182,13 +182,25 @@ function AddTransaction() {
       return;
     }
 
+    // code to fix date for firestore
+    // console.log("==preFix: ", date);
+    // convert date to firestore timestamp
+    const fixedDate = new Date(date);
+    // set the time to current time
+    fixedDate.setHours(new Date().getHours());
+    fixedDate.setMinutes(new Date().getMinutes());
+    fixedDate.setSeconds(new Date().getSeconds());
+    fixedDate.setMilliseconds(new Date().getMilliseconds());
+    // add one day
+    fixedDate.setDate(fixedDate.getDate() + 1);
+    // console.log("==postFix: ", newDate);
+
     const spendingRef = collection(db, "users", user.uid, "spending");
     const newSpendingDoc = {
       amount: amount,
       category: category,
       description: description,
-      date: date,
-      dateCreated: new Date(),
+      date: fixedDate,
     };
 
     try {
@@ -281,7 +293,6 @@ function AddTransaction() {
                 type="date"
                 id="date"
                 name="date"
-                value={date}
                 onChange={(e) => setDate(e.target.value)}
               />
             </div>
@@ -334,11 +345,7 @@ function TransactionRow({ transaction }) {
           </button>
         </td>
         <td>
-          {new Date(
-            transaction.date.split("-")[0],
-            transaction.date.split("-")[1] - 1, // JavaScript months are 0-indexed
-            transaction.date.split("-")[2]
-          ).toLocaleDateString()}
+          {new Date(transaction.date.seconds * 1000).toLocaleDateString()}
         </td>
         <td>${transaction.amount}</td>
         <td>{transaction.category}</td>
