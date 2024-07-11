@@ -183,7 +183,6 @@ function AddTransaction() {
     }
 
     // code to fix date for firestore
-    // console.log("==preFix: ", date);
     // convert date to firestore timestamp
     const fixedDate = new Date(date);
     // set the time to current time
@@ -193,7 +192,6 @@ function AddTransaction() {
     fixedDate.setMilliseconds(new Date().getMilliseconds());
     // add one day
     fixedDate.setDate(fixedDate.getDate() + 1);
-    // console.log("==postFix: ", newDate);
 
     const incomeRef = collection(db, "users", user.uid, "income");
     const newIncomeDoc = {
@@ -245,7 +243,7 @@ function AddTransaction() {
                 onChange={(e) => setCategory(e.target.value)}
               >
                 <option value="">Select Category</option>
-                {budgetCategories.map((category, index) => (
+                {budgetCategories.active.map((category, index) => (
                   <option key={index} value={category}>
                     {category}
                   </option>
